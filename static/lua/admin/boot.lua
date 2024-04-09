@@ -5,3 +5,6 @@ shell.run('/run/toggle.lua completion')
 lvn.net.downloadFile('/lua/admin/eval.lua', '/run/eval.lua')
 shell.setAlias('eval', '/run/eval.lua')
 shell.run('/run/eval.lua completion')
+
+lvn.net.downloadFile('/lua/admin/update.lua', '/run/update.lua')
+shell.setAlias('update', '/run/update.lua')

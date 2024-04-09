@@ -62,6 +62,10 @@ local packetHandlers = {
 
   turnOff = function(side)
     redstone.setOutput(side, false)
+  end,
+
+  update = function()
+    shell.run("/startup/boot.lua update")
   end
 }
 

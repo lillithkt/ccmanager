@@ -15,8 +15,6 @@ end
 if tArgs[1] == "completion" then
   local nodes = textutils.unserializeJSON(lvn.net.get("/api/admin/nodes"))
 
-  print(nodes)
-
   -- nodes: array of {name: string, id: string}
   -- allow param 1 to be a node name or id
   -- param 2 is a direction
@@ -27,12 +25,9 @@ if tArgs[1] == "completion" then
   local possibleNodes = {}
   
   for i, node in ipairs(nodes) do
-    print(node.name)
     table.insert(possibleNodes, node.name)
     table.insert(possibleNodes, tostring(node.id))
   end
-
-  print(textutils.serialiseJSON(possibleNodes))
 
   local complete = completion.build({ completion.choice, possibleNodes}, { completion.choice, possibleDirections })
 

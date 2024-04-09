@@ -1,5 +1,11 @@
 shell.setAlias("boot", "/startup/boot.lua")
 
+local completion = require("cc.shell.completion")
+
+local complete = completion.build({ completion.choice, { "update", "boot"}}, { completion.choice, {"node", "admin"} })
+
+shell.setCompletionFunction(shell.getRunningProgram(), complete)
+
 
 os.loadAPI("/lvn/core/lvn.lua")
 os.loadAPI("/lvn/core/config.lua")
@@ -45,3 +51,9 @@ end
 print("Running boot.lua")
 
 shell.run("/run/boot.lua")
+
+if lvn.config.get("boot.type") == "node" then
+  print("Node exited, rebooting...")
+  sleep(5)
+  os.reboot()
+end

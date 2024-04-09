@@ -6,7 +6,8 @@ export enum ClientPacketType {
 	Eval = 'eval',
 	Toggle = 'toggle',
 	TurnOn = 'turnOn',
-	TurnOff = 'turnOff'
+	TurnOff = 'turnOff',
+	Update = 'update'
 }
 
 export type ClientPacketData = {
@@ -22,6 +23,7 @@ export type ClientPacketData = {
 	[ClientPacketType.Toggle]: Direction;
 	[ClientPacketType.TurnOn]: Direction;
 	[ClientPacketType.TurnOff]: Direction;
+	[ClientPacketType.Update]: Record<string, never>;
 };
 
 export type ClientPacket = {
