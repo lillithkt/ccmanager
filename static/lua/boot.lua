@@ -1,6 +1,12 @@
-urls = require("/lvn/core/urls")
-download = require("/lvn/core/download")
-bootConfig = require("/lvn/core/bootConfig")
+shell.setAlias("boot", "/startup/boot.lua")
+
+
+os.loadAPI("/lvn/core/lvn.lua")
+os.loadAPI("/lvn/core/config.lua")
+os.loadAPI("/lvn/core/net.lua")
+os.loadAPI("/lvn/core/urls.lua")
+
+
 
 local tArgs = { ... }
 
@@ -11,7 +17,7 @@ fs.makeDir("/run")
 
 if tArgs[1] == "update" then
 
-  download.downloadFile("/lua/update.lua", "/run/update.lua")
+  lvn.net.downloadFile("/lua/update.lua", "/run/update.lua")
   shell.run("/run/update.lua")
 
   return os.reboot()
@@ -19,7 +25,7 @@ end
 
 if tArgs[1] == "boot" and tArgs[2] then
   print("Booting into " .. tArgs[2] .. " mode")
-  bootConfig.type = tArgs[2]
+  lvn.config.set("boot.type", tArgs[2])
 else
   print("booting...")
 end
@@ -30,12 +36,18 @@ if fs.exists("/run") then
 end
 fs.makeDir("/run")
 
-if bootConfig.customBootUrl then
-  download.downloadFile(bootConfig.customBootUrl, "/run/boot.lua")
+if lvn.config.get("boot.customBootUrl") then
+  lvn.net.downloadFile(lvn.config.get("boot.customBootUrl"), "/run/boot.lua")
 else
-  download.downloadFile("/lua/" .. bootConfig.type .. "/boot.lua", "/run/boot.lua")
+  lvn.net.downloadFile("/lua/" .. lvn.config.get("boot.type") .. "/boot.lua", "/run/boot.lua")
 end
 
 print("Running boot.lua")
 
 shell.run("/run/boot.lua")
+
+print("Boot Failed")
+
+sleep(5)
+
+os.reboot()

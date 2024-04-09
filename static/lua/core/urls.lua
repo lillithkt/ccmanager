@@ -1,10 +1,4 @@
-
-
-bootConfig = require('/lvn/core/bootConfig')
-
-local urls = {
-  httpBase = "http" .. (bootConfig.ssl and "s" or "") .. "://" .. bootConfig.host .. ":" .. bootConfig.port,
-  ws = "ws" .. (bootConfig.ssl and "s" or "") .. "://" .. bootConfig.host .. ":" .. bootConfig.port .. "/websocket",
+lvn.urls = {
+  httpBase = "http" .. (lvn.config.get("boot.ssl") and "s" or "") .. "://" .. lvn.config.get("boot.host") .. ":" .. lvn.config.get("boot.port"),
+  ws = "ws" .. (lvn.config.get("boot.ssl") and "s" or "") .. "://" .. lvn.config.get("boot.host") .. ":" .. lvn.config.get("boot.port") .. "/websocket",
 }
-
-return urls

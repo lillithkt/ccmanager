@@ -42,7 +42,7 @@ const defaultConfig: ServerConfig = {
 	}
 };
 
-const serverConfig = existsSync('config.json')
+const serverConfig: ServerConfig = existsSync('config.json')
 	? JSON.parse(readFileSync('config.json', 'utf8'))
 	: defaultConfig;
 

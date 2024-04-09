@@ -1,10 +1,5 @@
-download = require('/lvn/core/download')
+lvn.net.downloadFile('/lua/node/main.lua', '/run/main.lua')
 
-
-download.downloadFile('/lua/node/config.lua', '/run/config.lua')
-
-download.downloadFile('/lua/node/main.lua', '/run/main.lua')
-
-download.downloadFile('/lua/node/ws.lua', '/run/ws.lua')
+lvn.net.downloadFile('/lua/node/ws.lua', '/run/ws.lua')
 
 shell.run('/run/main.lua')

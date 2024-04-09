@@ -1,6 +1,11 @@
 import { building } from '$app/environment';
-import type { ExtendedGlobal } from '$lib/server/webSocketUtils';
-import { GlobalThisWSS } from '$lib/server/webSocketUtils';
+import serverConfig from '$lib/config';
+import { ClientPacketType } from '$lib/packets/client';
+import { ServerPacketType, type ServerPacket, type ServerPacketData } from '$lib/packets/server';
+import { Node } from '$lib/server/client/node';
+import type { ExtendedGlobal } from '$lib/server/websocket/server';
+import { GlobalThisWSS } from '$lib/server/websocket/server';
+import { ClientType } from '$lib/types';
 import type { Handle } from '@sveltejs/kit';
 
 // This can be extracted into a separate file
@@ -16,12 +21,72 @@ const startupWebsocketServer = () => {
 			// if (!session) ws.close(1008, 'User not authenticated');
 			// ws.userId = session.userId;
 			console.log(`[wss:kit] client connected (${ws.socketId})`);
-			ws.send(`Hello from SvelteKit ${new Date().toLocaleString()} (${ws.socketId})]`);
 
-			ws.on('close', () => {
-				console.log(`[wss:kit] client disconnected (${ws.socketId})`);
+			ws.on('close', (_: unknown, code: number, reason: string) => {
+				console.log(
+					`[wss:kit] client disconnected (${ws.socketId}) with code ${code} and reason ${reason}`
+				);
+			});
+
+			ws.once('message', (message) => {
+				const packet = JSON.parse(message.toString()) as ServerPacket[ServerPacketType];
+
+				if (packet.type !== ServerPacketType.Register) {
+					ws.send(
+						JSON.stringify({
+							type: ClientPacketType.Register,
+							data: {
+								success: false,
+								message: 'Invalid packet type'
+							}
+						})
+					);
+					ws.close(1008, 'Invalid packet type');
+					return;
+				}
+
+				const data = packet.data as ServerPacketData[ServerPacketType.Register];
+
+				switch (data.type) {
+					case ClientType.Node: {
+						ws.type = ClientType.Node;
+						const node = new Node(ws, data.name, data.id, data.debug || false);
+						ws.item = node;
+
+						if (data.password !== serverConfig.passwords.node) {
+							node.send(ClientPacketType.Register, {
+								success: false,
+								message: 'Invalid password'
+							});
+							ws.close(1008, 'Invalid password');
+							return;
+						}
+
+						wss.nodes.set(ws.item.id, node);
+
+						node.send(ClientPacketType.Register, {
+							success: true
+						});
+
+						node.on('close', () => {
+							wss.nodes.delete(node.id);
+						});
+
+						break;
+					}
+
+					default:
+						ws.send(
+							JSON.stringify({
+								error: 'Invalid client type'
+							})
+						);
+						ws.close(1008, 'Invalid client type');
+						return;
+				}
 			});
 		});
+
 		wssInitialized = true;
 	}
 };

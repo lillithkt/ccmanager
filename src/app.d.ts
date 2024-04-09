@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { ExtendedWebSocketServer } from '$lib/server/webSocketUtils';
+import type { ExtendedWebSocketServer } from '$lib/server/websocket/server';
 
 // for information about these interfaces
 declare global {

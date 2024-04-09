@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import { createWSSGlobalInstance, onHttpServerUpgrade } from './src/lib/server/webSocketUtils';
+import { createWSSGlobalInstance, onHttpServerUpgrade } from './src/lib/server/websocket/server';
 
 export default defineConfig({
 	plugins: [
