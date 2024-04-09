@@ -98,8 +98,24 @@ export const handle = (async ({ event, resolve }) => {
 		const wss = (globalThis as ExtendedGlobal)[GlobalThisWSS];
 		if (wss !== undefined) {
 			event.locals.wss = wss;
+
+			if (event.url.pathname.startsWith('/api/admin/nodes')) {
+				let node = wss.nodes.get(Number(event.params.id));
+				if (!node) {
+					for (const n of wss.nodes.values()) {
+						if (n.name === event.params.id) {
+							node = n;
+							break;
+						}
+					}
+				}
+				if (node) {
+					event.locals.node = node;
+				}
+			}
 		}
 	}
+
 	const response = await resolve(event, {
 		filterSerializedResponseHeaders: (name) => name === 'content-type'
 	});

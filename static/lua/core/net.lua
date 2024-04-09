@@ -49,10 +49,7 @@ local function post(url, data)
     if url:find("^/") then
         url = lvn.urls.httpBase .. url
     end
-    print(url)
-    print(data)
-    local file = http.post(url, data)
-    print(file)
+    local file, e = http.post(url, data)
     if not file then
         return false
     end

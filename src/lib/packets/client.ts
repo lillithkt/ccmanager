@@ -1,7 +1,12 @@
+import type { Direction } from '$lib/types/direction';
+
 export enum ClientPacketType {
 	Register = 'register',
 	Heartbeat = 'heartbeat',
-	Eval = 'eval'
+	Eval = 'eval',
+	Toggle = 'toggle',
+	TurnOn = 'turnOn',
+	TurnOff = 'turnOff'
 }
 
 export type ClientPacketData = {
@@ -14,6 +19,9 @@ export type ClientPacketData = {
 		nonce: number;
 		code: string;
 	};
+	[ClientPacketType.Toggle]: Direction;
+	[ClientPacketType.TurnOn]: Direction;
+	[ClientPacketType.TurnOff]: Direction;
 };
 
 export type ClientPacket = {

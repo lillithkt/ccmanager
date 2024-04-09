@@ -51,6 +51,18 @@ local packetHandlers = {
       end
     end
   end,
+
+  toggle = function(side)
+    redstone.setOutput(side, not redstone.getOutput(side))
+  end,
+
+  turnOn = function(side)
+    redstone.setOutput(side, true)
+  end,
+
+  turnOff = function(side)
+    redstone.setOutput(side, false)
+  end
 }
 
 
@@ -101,7 +113,8 @@ end
 
 
 
-function ws.connect() 
+function ws.connect()
+  lvn.net.get("/api/render")
   local socket, err = http.websocket(lvn.urls.ws)
   if not socket then
     printError("Connection Error: ", err)
@@ -126,9 +139,9 @@ function ws.disconnect()
 end
 
 function ws.loopWs()
-  -- while true do 
-  --   parallel.waitForAny(ws.handleMessage, ws.handleClose, ws.handleError)
-  -- end
+  while true do 
+    parallel.waitForAny(ws.handleMessage, ws.handleClose, ws.handleError)
+  end
 end
 
 return ws

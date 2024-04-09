@@ -45,9 +45,3 @@ end
 print("Running boot.lua")
 
 shell.run("/run/boot.lua")
-
-print("Boot Failed")
-
-sleep(5)
-
-os.reboot()

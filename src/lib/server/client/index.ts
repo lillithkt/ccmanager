@@ -40,7 +40,6 @@ export class Client implements SerializableClient {
 			if (this.ws.readyState !== this.ws.OPEN) {
 				return;
 			}
-			console.log(this.heartbeats);
 			const now = Date.now();
 			this.send(ClientPacketType.Heartbeat, now);
 			this.heartbeats.push(now);
