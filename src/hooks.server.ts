@@ -2,6 +2,7 @@ import { building } from '$app/environment';
 import serverConfig from '$lib/config';
 import { ClientPacketType } from '$lib/packets/client';
 import { ServerPacketType, type ServerPacket, type ServerPacketData } from '$lib/packets/server';
+import { Admin } from '$lib/server/client/admin';
 import { Node } from '$lib/server/client/node';
 import type { ExtendedGlobal } from '$lib/server/websocket/server';
 import { GlobalThisWSS } from '$lib/server/websocket/server';
@@ -16,6 +17,7 @@ const startupWebsocketServer = () => {
 	const wss = (globalThis as ExtendedGlobal)[GlobalThisWSS];
 	if (wss !== undefined) {
 		wss.on('connection', (ws) => {
+			ws.wss = wss;
 			// This is where you can authenticate the client from the request
 			// const session = await getSessionFromCookie(request.headers.cookie || '');
 			// if (!session) ws.close(1008, 'User not authenticated');
@@ -50,7 +52,7 @@ const startupWebsocketServer = () => {
 				switch (data.type) {
 					case ClientType.Node: {
 						ws.type = ClientType.Node;
-						const node = new Node(ws, data.name, data.id, data.debug || false);
+						const node = new Node(ws, data.name, data.id, data.debug || false, data.turtle);
 						ws.item = node;
 
 						if (data.password !== serverConfig.passwords.node) {
@@ -70,6 +72,33 @@ const startupWebsocketServer = () => {
 
 						node.on('close', () => {
 							wss.nodes.delete(node.id);
+						});
+
+						break;
+					}
+
+					case ClientType.Admin: {
+						ws.type = ClientType.Admin;
+						const admin = new Admin(ws, data.name, data.id, data.debug || false, data.turtle);
+						ws.item = admin;
+
+						if (data.password !== serverConfig.passwords.admin) {
+							admin.send(ClientPacketType.Register, {
+								success: false,
+								message: 'Invalid password'
+							});
+							ws.close(1008, 'Invalid password');
+							return;
+						}
+
+						wss.admins.set(ws.item.id, admin);
+
+						admin.send(ClientPacketType.Register, {
+							success: true
+						});
+
+						admin.on('close', () => {
+							wss.admins.delete(admin.id);
 						});
 
 						break;

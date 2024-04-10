@@ -1,4 +1,4 @@
-import type { Direction } from '$lib/types/direction';
+import type { Direction, TurtleDirection } from '$lib/types/direction';
 
 export enum ClientPacketType {
 	Register = 'register',
@@ -7,7 +7,10 @@ export enum ClientPacketType {
 	Toggle = 'toggle',
 	TurnOn = 'turnOn',
 	TurnOff = 'turnOff',
-	Update = 'update'
+	Update = 'update',
+	Move = 'move',
+	Dig = 'dig',
+	Refuel = 'refuel'
 }
 
 export type ClientPacketData = {
@@ -24,6 +27,9 @@ export type ClientPacketData = {
 	[ClientPacketType.TurnOn]: Direction;
 	[ClientPacketType.TurnOff]: Direction;
 	[ClientPacketType.Update]: Record<string, never>;
+	[ClientPacketType.Move]: TurtleDirection;
+	[ClientPacketType.Dig]: TurtleDirection;
+	[ClientPacketType.Refuel]: Record<string, never>;
 };
 
 export type ClientPacket = {

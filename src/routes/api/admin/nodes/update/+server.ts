@@ -1,5 +1,5 @@
 import { ClientPacketType } from '$lib/packets/client';
-import type { RequestHandler } from '@sveltejs/kit';
+import { text, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ locals }) => {
 	const numUpdated = locals.wss.nodes.size;
@@ -7,5 +7,5 @@ export const POST: RequestHandler = async ({ locals }) => {
 		client.send(ClientPacketType.Update, {});
 	}
 
-	return new Response(numUpdated.toString(), { status: 200 });
+	return text(numUpdated.toString());
 };

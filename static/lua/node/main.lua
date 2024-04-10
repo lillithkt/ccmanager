@@ -8,7 +8,7 @@ end
 
 ws = require("/run/ws")
 
-ws.connect()
+ws.connect(lvn.config.get("node.password"))
 
 local function onTerminate()
   os.pullEventRaw("terminate")

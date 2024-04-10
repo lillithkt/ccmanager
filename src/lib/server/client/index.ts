@@ -8,6 +8,7 @@ export class Client implements SerializableClient {
 	id: number;
 	ws: ExtendedWebSocket;
 	debug: boolean;
+	turtle: boolean;
 
 	get serializable(): SerializableClient {
 		return new SerializableClient(this);
@@ -18,14 +19,15 @@ export class Client implements SerializableClient {
 
 	heartbeats: number[] = [];
 
-	constructor(ws: ExtendedWebSocket, name: string, id: number, debug = false) {
+	constructor(ws: ExtendedWebSocket, name: string, id: number, debug = false, turtle = false) {
 		this.ws = ws;
 		this.name = name;
 		this.id = id;
 		this.debug = debug;
+		this.turtle = turtle;
 
 		this.ws.on('close', (code, reason) => {
-			this.emit('close', code, reason);
+			this.emit('close', code, reason.toString());
 		});
 
 		this.ws.on('message', (message) => {
@@ -91,7 +93,6 @@ export class Client implements SerializableClient {
 
 	emit(event: 'close', code: number, reason: string): void;
 	emit<T extends ServerPacketType>(type: T, data: ServerPacketData[T]): void;
-	emit(event: string, ...args: unknown[]): void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	emit(event: string, ...args: any[]) {
 		this.listeners.get(event)?.forEach((callback) => callback(...args));
@@ -99,7 +100,6 @@ export class Client implements SerializableClient {
 
 	on(event: 'close', callback: (code: number, reason: string) => void): number;
 	on<T extends ServerPacketType>(type: T, callback: (data: ServerPacketData[T]) => void): number;
-	on(event: string, callback: (...args: unknown[]) => void): number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	on(event: string, callback: (...args: any[]) => void): number {
 		const listeners = this.listeners.get(event) || new Map();
@@ -115,7 +115,7 @@ export class Client implements SerializableClient {
 	once(event: string, callback: (...args: any[]) => void): number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	once(event: string, callback: (...args: any[]) => void): number {
-		const id = this.on(event, (...args) => {
+		const id = this.on(event as ServerPacketType, (...args) => {
 			this.off(event, id);
 			callback(...args);
 		});

@@ -1,9 +1,9 @@
 import serverConfig from '$lib/config';
-import type { RequestHandler } from '@sveltejs/kit';
+import { text, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ request }) => {
 	if (request.headers.get('user-agent')?.includes('computercraft')) {
-		return new Response(`
+		return text(`
 	
 		function setConfig(name, val)
 			settings.set("lvn." .. name, val)
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ request }) => {
 		setup()
 	`);
 	}
-	return new Response(
+	return text(
 		`wget run http${serverConfig.ssl ? 's' : ''}://${serverConfig.connectHost}:${serverConfig.connectPort}/setup`
 	);
 };
