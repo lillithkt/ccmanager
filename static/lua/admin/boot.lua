@@ -15,6 +15,14 @@ lvn.net.downloadFile('/lua/admin/debug.lua', '/run/debug.lua')
 shell.setAlias('debug', '/run/debug.lua')
 shell.run('/run/debug.lua completion')
 
+lvn.net.downloadFile('/lua/admin/packet.lua', '/run/packet.lua')
+shell.setAlias('packet', '/run/packet.lua')
+shell.run('/run/packet.lua completion')
+
+lvn.net.downloadFile('/lua/admin/reboot.lua', '/run/reboot.lua')
+shell.setAlias('reboot', '/run/reboot.lua')
+shell.run('/run/reboot.lua completion')
+
 fs.makeDir("/run/win")
 lvn.net.downloadFile('/lua/admin/win/main.lua', '/run/win/main.lua')
 shell.setAlias('win', '/run/win/main.lua')
@@ -26,13 +34,13 @@ shell.setAlias('update', '/run/update.lua')
 
 lvn.net.downloadFile('/lua/shared/ws.lua', '/run/sharedWs.lua')
 
+lvn.net.downloadFile('/lua/shared/wsLoop.lua', '/run/wsLoop.lua')
+
 lvn.net.downloadFile('/lua/shared/term.lua', '/run/term.lua')
 
 os.loadAPI('/run/sharedWs.lua')
 
-lvn.net.downloadFile('/lua/admin/ws.lua', '/run/ws.lua')
-
-local wsId = multishell.launch({}, "/run/ws.lua")
+local wsId = multishell.launch({}, "/run/wsLoop.lua")
 multishell.setTitle(wsId, "Websocket Runner")
 
 

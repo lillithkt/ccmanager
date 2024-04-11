@@ -7,7 +7,7 @@ import { Node } from '$lib/server/client/node';
 import type { ExtendedGlobal } from '$lib/server/websocket/server';
 import { GlobalThisWSS } from '$lib/server/websocket/server';
 import { ClientType } from '$lib/types';
-import { redirect, type Handle } from '@sveltejs/kit';
+import { redirect, text, type Handle } from '@sveltejs/kit';
 
 // This can be extracted into a separate file
 let wssInitialized = false;
@@ -17,6 +17,7 @@ const startupWebsocketServer = () => {
 	const wss = (globalThis as ExtendedGlobal)[GlobalThisWSS];
 	if (wss !== undefined) {
 		wss.on('connection', (ws) => {
+			if (ws.wss) return;
 			ws.wss = wss;
 			// This is where you can authenticate the client from the request
 			// const session = await getSessionFromCookie(request.headers.cookie || '');
@@ -159,11 +160,27 @@ export const handle = (async ({ event, resolve }) => {
 		}
 	}
 
-	if (!['/websocket', '/login', '/setup', '/lua'].includes(event.url.pathname)) {
+	if (event.url.pathname.startsWith('/api/node')) {
+		if (
+			!event.cookies.get('password') ||
+			event.cookies.get('password') !== serverConfig.passwords.node
+		) {
+			return text('Unauthorized', { status: 401 });
+		}
+
+		const node = event.locals.wss.getNode(event.params.id!);
+		if (node) {
+			event.locals.node = node;
+		}
+	} else if (
+		!['/websocket', '/login', '/setup', '/api/render'].includes(event.url.pathname) &&
+		!event.url.pathname.includes('/lua')
+	) {
 		if (
 			!event.cookies.get('password') ||
 			event.cookies.get('password') !== serverConfig.passwords.admin
 		) {
+			console.log('event', event);
 			return redirect(302, '/login');
 		}
 	}

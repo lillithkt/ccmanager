@@ -1,1 +1,0 @@
-This page is necesary as, well atleast in development, the sveltekit handler is not initalized until something makes a web request

@@ -33,6 +33,7 @@ registerPacketHandler("register", function(data)
     print("Registered successfully")
   else
     printError("Registration failed: ", data.message)
+    lvn.chat("Registration failed: " .. data.message)
     sleep(5)
     os.reboot()
   end
@@ -42,6 +43,9 @@ registerPacketHandler("heartbeat", function(data)
   send("heartbeat", data)
 end)
 
+registerPacketHandler("reboot", function()
+  os.reboot()
+end)
 
 registerPacketHandler("eval", function(data)
   local func, err = loadstring(data.code)
@@ -81,7 +85,7 @@ registerPacketHandler("setDebug", function(data)
 end)
 
 registerPacketHandler("command", function(data)
-  local success, logs = commands.run(data.command)
+  local success, logs = commands.exec(data.command)
   send("command", {
     nonce = data.nonce,
     success = success,
@@ -102,7 +106,7 @@ function handleMessage()
     end
 
     if packetHandlers[packet.type] then
-      packetHandlers[packet.type](packet.data)
+      pcall(packetHandlers[packet.type], packet.data)
     else
       printError("Unknown packet type: " .. packet.type)
     end
@@ -118,6 +122,7 @@ function handleClose()
     if speaker then
       speaker.playSound("minecraft:block.bell.use")
     end
+    lvn.chat("Connection closed: " .. code and code or "code unknown" .. " " .. reason)
     sleep(5)
     os.reboot()
   end
@@ -128,6 +133,11 @@ function handleError()
 
   if connUrl == lvn.urls.ws then
     printError("Connection error: ", code, reason)
+    local speaker = peripheral.find("speaker")
+    if speaker then
+      speaker.playSound("minecraft:block.bell.use")
+    end
+    lvn.chat("Connection error: " .. code .. " " .. reason)
     sleep(5)
     os.reboot()
   end
@@ -167,8 +177,12 @@ function disconnect()
   socket.close()
 end
 
+function loopOnce()
+  parallel.waitForAny(handleMessage, handleClose, handleError)
+end
+
 function loop()
   while true do
-    parallel.waitForAny(handleMessage, handleClose, handleError)
+    loopOnce()
   end
 end

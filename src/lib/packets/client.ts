@@ -10,12 +10,16 @@ export enum ClientPacketType {
 	TurnOn = 'turnOn',
 	TurnOff = 'turnOff',
 	Update = 'update',
+	SetDebug = 'setDebug',
+	AdminNodePacket = 'adminNodePacket',
+	Command = 'command',
+	Reboot = 'reboot',
+
+	// Turtle
 	Move = 'move',
 	Dig = 'dig',
 	Refuel = 'refuel',
-	SetDebug = 'setDebug',
-	AdminNodePacket = 'adminNodePacket',
-	Command = 'command'
+	TurtleMode = 'turtleMode'
 }
 
 export type ClientPacketData = {
@@ -32,9 +36,6 @@ export type ClientPacketData = {
 	[ClientPacketType.TurnOn]: Direction;
 	[ClientPacketType.TurnOff]: Direction;
 	[ClientPacketType.Update]: Record<string, never>;
-	[ClientPacketType.Move]: TurtleDirection;
-	[ClientPacketType.Dig]: TurtleDirection;
-	[ClientPacketType.Refuel]: Record<string, never>;
 	[ClientPacketType.SetDebug]: boolean;
 	[ClientPacketType.AdminNodePacket]: {
 		node: SerializableClient;
@@ -44,6 +45,16 @@ export type ClientPacketData = {
 	[ClientPacketType.Command]: {
 		nonce: number;
 		command: string;
+	};
+	[ClientPacketType.Reboot]: Record<string, never>;
+
+	// Turtle
+	[ClientPacketType.Move]: TurtleDirection;
+	[ClientPacketType.Dig]: TurtleDirection;
+	[ClientPacketType.Refuel]: Record<string, never>;
+	[ClientPacketType.TurtleMode]: {
+		mode: string;
+		args: string[];
 	};
 };
 

@@ -35,7 +35,7 @@ if tArgs[1] == "completion" then
   
   }, 
 {
-  completion.choice, {"dig", "idle"}
+  completion.choice, {"idle", "goto", "spin", "mine"}
 })
 
   shell.setCompletionFunction(shell.getRunningProgram(), complete)
@@ -78,11 +78,24 @@ local mode = tArgs[2]
 
 if mode == "mode" then
   if not tArgs[3] then
-    print("Usage: turtle <node> mode <mode>")
+    print("Usage: turtle <node> mode <mode> [args]")
     return
   end
 
-  local res = lvn.net.post("/api/admin/nodes/" .. node.id .. "/turtle/mode", tArgs[3])
+  if tArgs[3] == "goto" and not tArgs[4] then
+    local x, y, z = gps.locate()
+    tArgs[4] = math.floor(x)
+    tArgs[5] = math.floor(y)
+    tArgs[6] = math.floor(z)
+
+    -- Pocket computers are one above the player
+    if pocket then tArgs[5] = tArgs[5] - 1 end
+  end
+
+  local res = lvn.net.post("/api/admin/nodes/" .. node.id .. "/turtle/mode", textutils.serialiseJSON({
+    mode = tArgs[3],
+    args = {table.unpack(tArgs, 4)}
+  }))
 
   if not res then
     print("Failed to set mode")

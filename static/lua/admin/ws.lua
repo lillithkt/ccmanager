@@ -1,3 +1,0 @@
-sharedWs.connect()
-
-sharedWs.loop()

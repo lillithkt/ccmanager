@@ -11,7 +11,8 @@ export enum ServerPacketType {
 	Move = 'move',
 	Dig = 'dig',
 	Refuel = 'refuel',
-	Command = 'command'
+	Command = 'command',
+	Chat = 'chat'
 }
 
 export type ServerPacketData = {
@@ -50,6 +51,7 @@ export type ServerPacketData = {
 		success: boolean;
 		logs: string[];
 	};
+	[ServerPacketType.Chat]: string;
 };
 
 export type ServerPacket = {

@@ -72,6 +72,12 @@ export class Client implements SerializableClient {
 		this.on(ServerPacketType.Heartbeat, (data) => {
 			this.heartbeats = this.heartbeats.filter((heartbeat) => heartbeat > data);
 		});
+
+		this.on(ServerPacketType.Chat, (message) => {
+			const commandNode = Array.from(this.ws.wss.nodes.values()).find((i) => i.command);
+			if (!commandNode) return;
+			commandNode.runCommand(`tellraw @a {"text":"[${this.name} (${this.id})] ${message}"}`);
+		});
 	}
 
 	send<T extends ClientPacketType>(type: T, data: ClientPacketData[T]) {
@@ -87,6 +93,10 @@ export class Client implements SerializableClient {
 		}
 		this.ws.send(JSON.stringify(packet));
 		this.emit('packetOut', packet);
+	}
+
+	reboot() {
+		this.send(ClientPacketType.Reboot, {});
 	}
 
 	eval(code: string): Promise<ServerPacketData[ServerPacketType.Eval]> {

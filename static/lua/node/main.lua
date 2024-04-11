@@ -7,10 +7,31 @@ if not lvn.config.get("node.password") then
 end
 
 -- Register node specific packet handlers
-require("/run/ws")
+sharedWs.registerPacketHandler("toggle", function(data)
+  redstone.setOutput(data, not redstone.getOutput(data))
+end)
 
-sharedWs.connect()
+sharedWs.registerPacketHandler("turnOn", function(data)
+  redstone.setOutput(data, true)
+end)
 
+sharedWs.registerPacketHandler("turnOff", function(data)
+  redstone.setOutput(data, false)
+end)
 
+-- Load shared websocket loop
+local wsId = multishell.launch({}, "/run/wsLoop.lua")
+multishell.setTitle(wsId, "Websocket Runner")
 
-sharedWs.loop()
+-- Load turtle module
+if turtle then
+  local turtleLoop = require("/run/turtle/main")
+
+  while true do
+    turtleLoop()
+  end
+end
+
+while true do
+  sleep(1)
+end

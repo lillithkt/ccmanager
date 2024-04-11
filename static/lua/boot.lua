@@ -18,6 +18,7 @@ os.loadAPI("/lvn/core/config.lua")
 os.loadAPI("/lvn/core/net.lua")
 os.loadAPI("/lvn/core/urls.lua")
 os.loadAPI("/lvn/core/utils.lua")
+os.loadAPI("/lvn/core/chat.lua")
 
 
 
@@ -61,6 +62,7 @@ shell.run("/run/boot.lua")
 
 if lvn.config.get("boot.type") == "node" then
   print("Node exited, rebooting...")
+  lvn.chat("Node exited, rebooting...")
   sleep(5)
   os.reboot()
 end
