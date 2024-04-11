@@ -21,6 +21,9 @@ export declare class ExtendedWebSocket extends WebSocketBase {
 export interface ExtendedWebSocketServer extends Server<typeof ExtendedWebSocket> {
 	nodes: Map<number, Node>;
 	admins: Map<number, Admin>;
+
+	getNode(id: number): Node | undefined;
+	getNode(name: string): Node | undefined;
 }
 
 export type ExtendedGlobal = typeof globalThis & {
@@ -43,6 +46,20 @@ export const createWSSGlobalInstance = () => {
 	const wss = new WebSocketServer({ noServer: true }) as ExtendedWebSocketServer;
 	wss.nodes = new Map();
 	wss.admins = new Map();
+
+	wss.getNode = (idOrName: number | string) => {
+		if (idOrName === undefined) {
+			return;
+		}
+		if (typeof idOrName === 'number') {
+			return wss.nodes.get(idOrName);
+		}
+		for (const node of wss.nodes.values()) {
+			if (node.name === idOrName) {
+				return node;
+			}
+		}
+	};
 
 	(globalThis as ExtendedGlobal)[GlobalThisWSS] = wss;
 

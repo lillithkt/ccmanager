@@ -8,11 +8,8 @@ end
 
 ws = require("/run/ws")
 
-ws.connect(lvn.config.get("node.password"))
+ws.connect()
 
-local function onTerminate()
-  os.pullEventRaw("terminate")
-  ws.disconnect()
-end
 
-parallel.waitForAll(onTerminate, ws.loopWs)
+
+ws.loopWs()

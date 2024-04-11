@@ -7,7 +7,7 @@ import { Node } from '$lib/server/client/node';
 import type { ExtendedGlobal } from '$lib/server/websocket/server';
 import { GlobalThisWSS } from '$lib/server/websocket/server';
 import { ClientType } from '$lib/types';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 
 // This can be extracted into a separate file
 let wssInitialized = false;
@@ -142,6 +142,15 @@ export const handle = (async ({ event, resolve }) => {
 					event.locals.node = node;
 				}
 			}
+		}
+	}
+
+	if (!['/websocket', '/login', '/setup', '/lua'].includes(event.url.pathname)) {
+		if (
+			!event.cookies.get('password') ||
+			event.cookies.get('password') !== serverConfig.passwords.admin
+		) {
+			return redirect(302, '/login');
 		}
 	}
 

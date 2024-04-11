@@ -1,4 +1,4 @@
-import { ClientPacketType, type ClientPacketData } from '$lib/packets/client';
+import { ClientPacketType, type ClientPacket, type ClientPacketData } from '$lib/packets/client';
 import { ServerPacketType, type ServerPacket, type ServerPacketData } from '$lib/packets/server';
 import type { ExtendedWebSocket } from '$lib/server/websocket/server';
 import { SerializableClient } from '$lib/types/client';
@@ -7,8 +7,16 @@ export class Client implements SerializableClient {
 	name: string;
 	id: number;
 	ws: ExtendedWebSocket;
-	debug: boolean;
 	turtle: boolean;
+
+	_debug: boolean = false;
+	get debug(): boolean {
+		return this._debug;
+	}
+	set debug(value: boolean) {
+		this._debug = value;
+		this.send(ClientPacketType.SetDebug, value);
+	}
 
 	get serializable(): SerializableClient {
 		return new SerializableClient(this);
@@ -36,6 +44,7 @@ export class Client implements SerializableClient {
 				console.log(`Node ${this.name} (${this.id}) Received`, packet);
 			}
 			this.emit(packet.type, packet.data);
+			this.emit('packet', packet);
 		});
 
 		setInterval(() => {
@@ -60,20 +69,20 @@ export class Client implements SerializableClient {
 		if (this.ws.readyState !== this.ws.OPEN) {
 			return;
 		}
+		const packet = {
+			type,
+			data
+		} as ClientPacket[T];
 		if (this.debug) {
-			console.log(`Node ${this.name} (${this.id}) Sent`, { type, data });
+			console.log(`Node ${this.name} (${this.id}) Sent`, packet);
 		}
-		this.ws.send(
-			JSON.stringify({
-				type,
-				data
-			})
-		);
+		this.ws.send(JSON.stringify(packet));
+		this.emit('packetOut', packet);
 	}
 
 	eval(code: string): Promise<ServerPacketData[ServerPacketType.Eval]> {
 		const now = Date.now();
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			this.send(ClientPacketType.Eval, {
 				nonce: now,
 				code
@@ -81,17 +90,15 @@ export class Client implements SerializableClient {
 			const onId = this.on(ServerPacketType.Eval, (data) => {
 				if (data.nonce === now) {
 					this.off(ServerPacketType.Eval, onId);
-					if (data.success) {
-						resolve(data.output);
-					} else {
-						reject(data.output);
-					}
+					resolve(data);
 				}
 			});
 		});
 	}
 
 	emit(event: 'close', code: number, reason: string): void;
+	emit(event: 'packet', packet: ServerPacket[ServerPacketType]): void;
+	emit(event: 'packetOut', packet: ClientPacket[ClientPacketType]): void;
 	emit<T extends ServerPacketType>(type: T, data: ServerPacketData[T]): void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	emit(event: string, ...args: any[]) {
@@ -99,6 +106,8 @@ export class Client implements SerializableClient {
 	}
 
 	on(event: 'close', callback: (code: number, reason: string) => void): number;
+	on(event: 'packet', callback: (packet: ServerPacket[ServerPacketType]) => void): number;
+	on(event: 'packetOut', callback: (packet: ClientPacket[ClientPacketType]) => void): number;
 	on<T extends ServerPacketType>(type: T, callback: (data: ServerPacketData[T]) => void): number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	on(event: string, callback: (...args: any[]) => void): number {
@@ -110,21 +119,22 @@ export class Client implements SerializableClient {
 	}
 
 	once(event: 'close', callback: (code: number, reason: string) => void): number;
+	once(event: 'packet', callback: (packet: ServerPacket[ServerPacketType]) => void): number;
+	once(event: 'packetOut', callback: (packet: ClientPacket[ClientPacketType]) => void): number;
 	once<T extends ServerPacketType>(type: T, callback: (data: ServerPacketData[T]) => void): number;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	once(event: string, callback: (...args: any[]) => void): number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	once(event: string, callback: (...args: any[]) => void): number {
 		const id = this.on(event as ServerPacketType, (...args) => {
-			this.off(event, id);
+			this.off(event as ServerPacketType, id);
 			callback(...args);
 		});
 		return id;
 	}
 
 	off(event: 'close', id: number): void;
+	off(event: 'packet', id: number): void;
+	off(event: 'packetOut', id: number): void;
 	off<T extends ServerPacketType>(type: T, id: number): void;
-	off(event: string, id: number): void;
 	off(event: string, id: number) {
 		const listeners = this.listeners.get(event);
 		if (listeners) {

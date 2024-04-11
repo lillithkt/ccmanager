@@ -40,6 +40,10 @@
               language,
               theme: 'vs-dark',
           });
+
+          editor.onDidChangeModelContent(() => {
+              code = editor?.getValue() || '';
+          });
       })();
 
       return () => {

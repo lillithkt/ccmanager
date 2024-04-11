@@ -1,3 +1,9 @@
+local function getPasswordCookie()
+    local type = lvn.config.get("boot.type")
+    local password = lvn.config.get(type .. ".password")
+    return "password=" .. password
+end
+
 local function downloadFile(url, path)
     local url = url
     if url:find("^/") then
@@ -35,7 +41,9 @@ local function get(url)
     if url:find("^/") then
         url = lvn.urls.httpBase .. url
     end
-    local file = http.get(url)
+    local file = http.get(url, {
+        ["Cookie"] = getPasswordCookie()
+    })
     if not file then
         return false
     end
@@ -49,7 +57,9 @@ local function post(url, data)
     if url:find("^/") then
         url = lvn.urls.httpBase .. url
     end
-    local file, e = http.post(url, data)
+    local file, e = http.post(url, data, {
+        ["Cookie"] = getPasswordCookie()
+    })
     if not file then
         return false
     end

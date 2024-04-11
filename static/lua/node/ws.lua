@@ -42,4 +42,13 @@ ws.registerPacketHandler("refuel", function()
   turtle.refuel()
 end)
 
+ws.registerPacketHandler("turtle", function(data)
+  print("Received turtle command: " .. data)
+  local func = turtle[data]
+  if func then
+    func()
+  end
+  
+end)
+
 return ws

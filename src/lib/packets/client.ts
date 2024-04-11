@@ -1,4 +1,6 @@
+import type { SerializableClient } from '$lib/types/client';
 import type { Direction, TurtleDirection } from '$lib/types/direction';
+import type { ServerPacket, ServerPacketType } from './server';
 
 export enum ClientPacketType {
 	Register = 'register',
@@ -10,7 +12,9 @@ export enum ClientPacketType {
 	Update = 'update',
 	Move = 'move',
 	Dig = 'dig',
-	Refuel = 'refuel'
+	Refuel = 'refuel',
+	SetDebug = 'setDebug',
+	AdminNodePacket = 'adminNodePacket'
 }
 
 export type ClientPacketData = {
@@ -30,6 +34,12 @@ export type ClientPacketData = {
 	[ClientPacketType.Move]: TurtleDirection;
 	[ClientPacketType.Dig]: TurtleDirection;
 	[ClientPacketType.Refuel]: Record<string, never>;
+	[ClientPacketType.SetDebug]: boolean;
+	[ClientPacketType.AdminNodePacket]: {
+		node: SerializableClient;
+		toServer: boolean;
+		packet: ServerPacket[ServerPacketType] | ClientPacket[ClientPacketType];
+	};
 };
 
 export type ClientPacket = {

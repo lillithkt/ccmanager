@@ -71,6 +71,8 @@ export const GET: RequestHandler = async ({ request }) => {
 
 			downloadFile("/core/urls.lua", "/lvn/core/urls.lua")
 
+			downloadFile("/core/utils.lua", "/lvn/core/utils.lua")
+
 			downloadFile("/core/lvn.lua", "/lvn/core/lvn.lua")
 
 			print("Setup complete")

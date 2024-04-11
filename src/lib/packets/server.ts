@@ -27,7 +27,7 @@ export type ServerPacketData = {
 		nonce: number;
 		success: boolean;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		output: any;
+		output: string;
 	};
 
 	// Admin ones

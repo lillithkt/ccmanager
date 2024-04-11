@@ -8,3 +8,7 @@ if not numUpdated then
 end
 
 print("Updated " .. numUpdated .. " nodes")
+
+print("Updating self...")
+
+shell.run("/startup/boot update")

@@ -99,12 +99,7 @@ if mode == "control" then
   print("Starting control")
   local ws = require("/run/ws")
 
-  ws.connect(lvn.config.get("admin.password"))
-
-  local function onTerminate()
-    os.pullEventRaw("terminate")
-    ws.disconnect()
-  end
+  ws.connect()
 
   local function handleKey()
 
@@ -153,7 +148,7 @@ if mode == "control" then
     end
   end
 
-  parallel.waitForAll(onTerminate, handleKey, ws.loopWs)
+  parallel.waitForAny(handleKey, ws.loopWs)
 end
 
 print(res)

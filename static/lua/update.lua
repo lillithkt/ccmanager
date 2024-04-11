@@ -17,5 +17,8 @@ lvn.net.downloadFile('/lua/core/net.lua', '/lvn/core/net.lua')
 print('Downloading urls.lua...')
 lvn.net.downloadFile('/lua/core/urls.lua', '/lvn/core/urls.lua')
 
+print('Downloading utils.lua...')
+lvn.net.downloadFile('/lua/core/utils.lua', '/lvn/core/utils.lua')
+
 print('Downloading lvn.lua...')
 lvn.net.downloadFile('/lua/core/lvn.lua', '/lvn/core/lvn.lua')

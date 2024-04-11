@@ -2,7 +2,6 @@ import { Direction } from '$lib/types/direction';
 import { text, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ locals, request }) => {
-	console.log(locals.node);
 	if (!locals.node) {
 		return text('Node not found', { status: 404 });
 	}
