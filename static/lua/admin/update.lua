@@ -1,6 +1,6 @@
 
 
-local numUpdated = lvn.net.post("/api/admin/nodes/update", "")
+local numUpdated = lvn.net.post("/api/admin/update", "")
 
 if not numUpdated then
   print("Failed to update")
@@ -8,7 +8,3 @@ if not numUpdated then
 end
 
 print("Updated " .. numUpdated .. " nodes")
-
-print("Updating self...")
-
-shell.run("/startup/boot update")

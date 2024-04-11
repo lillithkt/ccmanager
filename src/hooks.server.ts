@@ -52,7 +52,14 @@ const startupWebsocketServer = () => {
 				switch (data.type) {
 					case ClientType.Node: {
 						ws.type = ClientType.Node;
-						const node = new Node(ws, data.name, data.id, data.debug || false, data.turtle);
+						const node = new Node(
+							ws,
+							data.name,
+							data.id,
+							data.debug || false,
+							data.turtle,
+							data.command
+						);
 						ws.item = node;
 
 						if (data.password !== serverConfig.passwords.node) {
@@ -79,7 +86,14 @@ const startupWebsocketServer = () => {
 
 					case ClientType.Admin: {
 						ws.type = ClientType.Admin;
-						const admin = new Admin(ws, data.name, data.id, data.debug || false, data.turtle);
+						const admin = new Admin(
+							ws,
+							data.name,
+							data.id,
+							data.debug || false,
+							data.turtle,
+							data.command
+						);
 						ws.item = admin;
 
 						if (data.password !== serverConfig.passwords.admin) {

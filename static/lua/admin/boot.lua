@@ -24,11 +24,16 @@ lvn.net.downloadFile('/lua/admin/update.lua', '/run/update.lua')
 shell.setAlias('update', '/run/update.lua')
 
 
+lvn.net.downloadFile('/lua/shared/ws.lua', '/run/sharedWs.lua')
 
+lvn.net.downloadFile('/lua/shared/term.lua', '/run/term.lua')
+
+os.loadAPI('/run/sharedWs.lua')
 
 lvn.net.downloadFile('/lua/admin/ws.lua', '/run/ws.lua')
 
-lvn.net.downloadFile('/lua/shared/ws.lua', '/run/sharedWs.lua')
+local wsId = multishell.launch({}, "/run/ws.lua")
+multishell.setTitle(wsId, "Websocket Runner")
 
 
 if not lvn.config.get("admin.password") then

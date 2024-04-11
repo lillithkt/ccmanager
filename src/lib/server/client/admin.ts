@@ -3,8 +3,15 @@ import { Client } from '.';
 import type { ExtendedWebSocket } from '../websocket/server';
 
 export class Admin extends Client {
-	constructor(ws: ExtendedWebSocket, name: string, id: number, debug = false, turtle: boolean) {
-		super(ws, name, id, debug, turtle);
+	constructor(
+		ws: ExtendedWebSocket,
+		name: string,
+		id: number,
+		debug = false,
+		turtle: boolean,
+		command: boolean
+	) {
+		super(ws, name, id, debug, turtle, command);
 
 		this.on(ServerPacketType.Move, (data) => {
 			this.ws.wss.getNode(data.id)?.move(data.direction);

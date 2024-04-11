@@ -8,6 +8,7 @@ export class Client implements SerializableClient {
 	id: number;
 	ws: ExtendedWebSocket;
 	turtle: boolean;
+	command: boolean;
 
 	_debug: boolean = false;
 	get debug(): boolean {
@@ -27,12 +28,20 @@ export class Client implements SerializableClient {
 
 	heartbeats: number[] = [];
 
-	constructor(ws: ExtendedWebSocket, name: string, id: number, debug = false, turtle = false) {
+	constructor(
+		ws: ExtendedWebSocket,
+		name: string,
+		id: number,
+		debug = false,
+		turtle = false,
+		command = false
+	) {
 		this.ws = ws;
 		this.name = name;
 		this.id = id;
 		this.debug = debug;
 		this.turtle = turtle;
+		this.command = command;
 
 		this.ws.on('close', (code, reason) => {
 			this.emit('close', code, reason.toString());
@@ -90,6 +99,22 @@ export class Client implements SerializableClient {
 			const onId = this.on(ServerPacketType.Eval, (data) => {
 				if (data.nonce === now) {
 					this.off(ServerPacketType.Eval, onId);
+					resolve(data);
+				}
+			});
+		});
+	}
+
+	runCommand(command: string): Promise<ServerPacketData[ServerPacketType.Command]> {
+		const now = Date.now();
+		return new Promise((resolve) => {
+			this.send(ClientPacketType.Command, {
+				nonce: now,
+				command
+			});
+			const onId = this.on(ServerPacketType.Command, (data) => {
+				if (data.nonce === now) {
+					this.off(ServerPacketType.Command, onId);
 					resolve(data);
 				}
 			});

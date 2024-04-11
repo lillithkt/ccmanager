@@ -14,7 +14,8 @@ export enum ClientPacketType {
 	Dig = 'dig',
 	Refuel = 'refuel',
 	SetDebug = 'setDebug',
-	AdminNodePacket = 'adminNodePacket'
+	AdminNodePacket = 'adminNodePacket',
+	Command = 'command'
 }
 
 export type ClientPacketData = {
@@ -39,6 +40,10 @@ export type ClientPacketData = {
 		node: SerializableClient;
 		toServer: boolean;
 		packet: ServerPacket[ServerPacketType] | ClientPacket[ClientPacketType];
+	};
+	[ClientPacketType.Command]: {
+		nonce: number;
+		command: string;
 	};
 };
 

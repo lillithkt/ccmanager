@@ -10,7 +10,8 @@ export enum ServerPacketType {
 
 	Move = 'move',
 	Dig = 'dig',
-	Refuel = 'refuel'
+	Refuel = 'refuel',
+	Command = 'command'
 }
 
 export type ServerPacketData = {
@@ -21,6 +22,7 @@ export type ServerPacketData = {
 		password: string;
 		debug?: boolean;
 		turtle: boolean;
+		command: boolean;
 	};
 	[ServerPacketType.Heartbeat]: number;
 	[ServerPacketType.Eval]: {
@@ -42,6 +44,12 @@ export type ServerPacketData = {
 		direction: TurtleDirection;
 	};
 	[ServerPacketType.Refuel]: number;
+
+	[ServerPacketType.Command]: {
+		nonce: number;
+		success: boolean;
+		logs: string[];
+	};
 };
 
 export type ServerPacket = {

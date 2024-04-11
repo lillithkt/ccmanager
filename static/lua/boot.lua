@@ -1,11 +1,17 @@
-shell.setAlias("boot", "/startup/boot.lua")
+local monitor = peripheral.find("monitor")
+if monitor then
+  monitor.clear()
+end
 
-local completion = require("cc.shell.completion")
+if shell then
+  shell.setAlias("boot", "/startup/boot.lua")
 
-local complete = completion.build({ completion.choice, { "update", "boot"}}, { completion.choice, {"node", "admin"} })
+  local completion = require("cc.shell.completion")
 
-shell.setCompletionFunction(shell.getRunningProgram(), complete)
+  local complete = completion.build({ completion.choice, { "update", "boot"}}, { completion.choice, {"node", "admin"} })
 
+  shell.setCompletionFunction(shell.getRunningProgram(), complete)
+end
 
 os.loadAPI("/lvn/core/lvn.lua")
 os.loadAPI("/lvn/core/config.lua")
@@ -25,7 +31,7 @@ fs.makeDir("/run")
 if tArgs[1] == "update" then
 
   lvn.net.downloadFile("/lua/update.lua", "/run/update.lua")
-  shell.run("/run/update.lua")
+  os.run({}, "/run/update.lua")
 
   return os.reboot()
 end

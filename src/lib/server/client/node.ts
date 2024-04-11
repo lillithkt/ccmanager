@@ -1,5 +1,5 @@
 import { ClientPacketType, type ClientPacket } from '$lib/packets/client';
-import type { ServerPacket, ServerPacketType } from '$lib/packets/server';
+import { ServerPacketType, type ServerPacket } from '$lib/packets/server';
 import type { Direction, TurtleDirection } from '$lib/types/direction';
 import type { ExtendedWebSocket } from '../websocket/server';
 import { Client } from './';
@@ -34,15 +34,20 @@ export class Node extends Client {
 		name: string,
 		id: number,
 		debug = false,
-		turtle: boolean = false
+		turtle: boolean = false,
+		command: boolean = false
 	) {
-		super(ws, name, id, debug, turtle);
+		super(ws, name, id, debug, turtle, command);
 
 		const reportToAdmins = (
 			packet: ClientPacket[ClientPacketType] | ServerPacket[ServerPacketType],
 			toServer: boolean
 		) => {
-			if (this.debug) {
+			if (
+				packet.type !== ServerPacketType.Heartbeat &&
+				packet.type !== ClientPacketType.Heartbeat &&
+				this.debug
+			) {
 				for (const admin of this.ws.wss.admins.values()) {
 					admin.send(ClientPacketType.AdminNodePacket, {
 						node: this.serializable,

@@ -6,10 +6,11 @@ if not lvn.config.get("node.password") then
   lvn.config.set("node.password", password)
 end
 
-ws = require("/run/ws")
+-- Register node specific packet handlers
+require("/run/ws")
 
-ws.connect()
+sharedWs.connect()
 
 
 
-ws.loopWs()
+sharedWs.loop()

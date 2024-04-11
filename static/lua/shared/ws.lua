@@ -1,23 +1,34 @@
-local ws = {}
+if sharedWs then
+  sharedWs.disconnect()
+  os.unloadAPI("sharedWs")
+end
 
-function ws.sendRaw(string)
-  if lvn.config.get("debug") then
-    print("Sending: ", string)
+
+socket = nil
+
+function sendRaw(string)
+  socket.send(string)
+end
+
+function send(type, data)
+  local packet = textutils.serialiseJSON({ type = type, data = data })
+  if lvn.config.get("debug") and type ~= "heartbeat" then
+    print("Sending: ", packet)
   end
-  ws.ws.send(string)
+  sendRaw(packet)
 end
 
-function ws.send(type, data)
-  ws.sendRaw(textutils.serialiseJSON({ type = type, data = data }))
+local packetHandlers = {}
+
+function registerPacketHandler(type, func)
+  packetHandlers[type] = func
 end
 
-ws.packetHandlers = {}
-
-function ws.registerPacketHandler(type, func)
-  ws.packetHandlers[type] = func
+function unregisterPacketHandler(type)
+  packetHandlers[type] = nil
 end
 
-ws.registerPacketHandler("register", function(data)
+registerPacketHandler("register", function(data)
   if data.success then
     print("Registered successfully")
   else
@@ -27,15 +38,15 @@ ws.registerPacketHandler("register", function(data)
   end
 end)
 
-ws.registerPacketHandler("heartbeat", function(data)
-  ws.send("heartbeat", data)
+registerPacketHandler("heartbeat", function(data)
+  send("heartbeat", data)
 end)
 
 
-ws.registerPacketHandler("eval", function(data)
+registerPacketHandler("eval", function(data)
   local func, err = loadstring(data.code)
     if not func then
-      ws.send("eval", {
+      send("eval", {
         nonce = data.nonce,
         success = false,
         output = err
@@ -43,14 +54,14 @@ ws.registerPacketHandler("eval", function(data)
     else
       local result = { pcall(func) }
       if not result[1] then
-        ws.send("eval", {
+        send("eval", {
           nonce = data.nonce,
           success = false,
           output = result[2]
         })
       else
         table.remove(result, 1)
-        ws.send("eval", {
+        send("eval", {
           nonce = data.nonce,
           success = true,
           output = result[1]
@@ -60,35 +71,45 @@ ws.registerPacketHandler("eval", function(data)
 end)
 
 
-ws.registerPacketHandler("update", function()
-  shell.run("/startup/boot.lua update")
+registerPacketHandler("update", function()
+  os.run({}, "/startup/boot.lua", "update")
 end)
 
 
-ws.registerPacketHandler("setDebug", function(data)
+registerPacketHandler("setDebug", function(data)
   lvn.config.set("debug", data)
 end)
 
+registerPacketHandler("command", function(data)
+  local success, logs = commands.run(data.command)
+  send("command", {
+    nonce = data.nonce,
+    success = success,
+    logs = logs
+  })
+end)
 
 
-function ws.handleMessage()
+
+function handleMessage()
   local event, connUrl, packetString = os.pullEvent("websocket_message")
 
   if connUrl == lvn.urls.ws then
-    if lvn.config.get("debug") then
-      print("Received: ", packetString)
-    end
     local packet = textutils.unserialiseJSON(packetString)
 
-    if ws.packetHandlers[packet.type] then
-      ws.packetHandlers[packet.type](packet.data)
+    if lvn.config.get("debug") and packet.type ~= "heartbeat" then
+      print("Received: ", packetString)
+    end
+
+    if packetHandlers[packet.type] then
+      packetHandlers[packet.type](packet.data)
     else
       printError("Unknown packet type: " .. packet.type)
     end
   end
 end
 
-function ws.handleClose()
+function handleClose()
   local event, connUrl, reason, code = os.pullEvent("websocket_closed")
 
   if connUrl == lvn.urls.ws then
@@ -102,7 +123,7 @@ function ws.handleClose()
   end
 end
 
-function ws.handleError()
+function handleError()
   local event, connUrl, reason, code = os.pullEvent("websocket_error")
 
   if connUrl == lvn.urls.ws then
@@ -116,45 +137,38 @@ end
 
 
 
-function ws.connect(password)
+function connect()
+  if socket and socket.isOpen() then
+    return true
+  end
   lvn.net.get("/api/render")
-  local socket, err = http.websocket(lvn.urls.ws)
-  if not socket then
+  local newSocket, err = http.websocket(lvn.urls.ws)
+  if not newSocket then
     printError("Connection Error: ", err)
     sleep(5)
     os.reboot()
   else
-    ws.ws = socket
+    socket = newSocket
     print('Connection established')
-    ws.send("register", {
+    send("register", {
       type = lvn.config.get("boot.type"),
       id = os.getComputerID(),
       name = os.getComputerLabel(),
       password = lvn.config.get(lvn.config.get("boot.type") .. ".password"),
       debug = lvn.config.get("debug"),
-      turtle = turtle ~= nil
+      turtle = turtle ~= nil,
+      command = commands ~= nil
     })
     return true
   end
 end
 
-function ws.disconnect()
-  ws.ws.close()
+function disconnect()
+  socket.close()
 end
 
-function ws.onTerminate()
-  os.pullEventRaw("terminate")
-  ws.disconnect()
-end
-
-function ws.loop()
+function loop()
   while true do
-    parallel.waitForAny(ws.handleMessage, ws.handleClose, ws.handleError)
+    parallel.waitForAny(handleMessage, handleClose, handleError)
   end
 end
-
-function ws.loopWs()
-  parallel.waitForAny(ws.onTerminate, ws.loop)
-end
-
-return ws

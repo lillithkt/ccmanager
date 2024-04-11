@@ -40,39 +40,38 @@ if not node then
   return
 end
 
+local term = require("/run/term")
+
 local origDebug = node.debug
 
 if not origDebug then
   lvn.net.post("/api/admin/nodes/" .. tArgs[1] .. "/debug", "true")
 end
 
-local ws = require("/run/ws")
-
-ws.registerPacketHandler("adminNodePacket", function(packet)
+sharedWs.registerPacketHandler("adminNodePacket", function(packet)
   if packet.node.id == tArgs[1] or packet.node.name == tArgs[1] then
     if packet.packet.type == "heartbeat" then
       return
     end
-    local str = packet.toServer and "Client:" or "Server:", textutils.serializeJSON(packet.packet)
-    print(str)
+    local str = (packet.toServer and "Client: " or "Server: ") .. textutils.serializeJSON(packet.packet)
+    term.write(str)
 
     local monitor = peripheral.find("monitor")
     if monitor then
-      monitor.write(str .. "\n")
+      monitor.write(str)
+      monitor.setCursorPos(1, monitor.getCursorPos() + 1)
     end
   end
 end)
 
 print("Listening for packets on node " .. tArgs[1])
 
-ws.connect()
-
 local function onTerminate()
   os.pullEventRaw("terminate")
-  ws.ws.close()
+  sharedWs.unregisterPacketHandler("adminNodePacket")
   if not origDebug then
     lvn.net.post("/api/admin/nodes/" .. tArgs[1] .. "/debug", "false")
   end
 end
 
-parallel.waitForAny(onTerminate, ws.loopWs)
+parallel.waitForAny(onTerminate)

@@ -1,3 +1,3 @@
-local ws = require("/run/sharedWs")
+sharedWs.connect()
 
-return ws
+sharedWs.loop()

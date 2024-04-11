@@ -57,8 +57,6 @@ if not nodesStr then
   return
 end
 
-print(nodesStr)
-
 local nodes = textutils.unserializeJSON(nodesStr)
 
 local node
@@ -97,9 +95,6 @@ end
 
 if mode == "control" then
   print("Starting control")
-  local ws = require("/run/ws")
-
-  ws.connect()
 
   local function handleKey()
 
@@ -108,47 +103,47 @@ if mode == "control" then
       local event, key = os.pullEvent("key")
 
       if key == keys.w then
-        ws.send("move", {
+        sharedWs.send("move", {
           id = node.id,
           direction = "forward"
         })
       elseif key == keys.s then
-        ws.send("move", {
+        sharedWs.send("move", {
           id = node.id,
           direction = "backward"
         })
       elseif key == keys.a then
-        ws.send("move", {
+        sharedWs.send("move", {
           id = node.id,
           direction = "left"
         })
       elseif key == keys.d then
-        ws.send("move", {
+        sharedWs.send("move", {
           id = node.id,
           direction = "right"
         })
       elseif key == keys.space then
-        ws.send("move", {
+        sharedWs.send("move", {
           id = node.id,
           direction = "up"
         })
       elseif key == keys.leftShift then
-        ws.send("move", {
+        sharedWs.send("move", {
           id = node.id,
           direction = "down"
         })
       elseif key == keys.e then
-        ws.send("dig", {
+        print("Digging")
+        sharedWs.send("dig", {
           id = node.id,
           direction = "forward"
         })
       elseif key == keys.r then
-        ws.send("refuel", node.id)
+        print("Refueling")
+        sharedWs.send("refuel", node.id)
       end
     end
   end
 
-  parallel.waitForAny(handleKey, ws.loopWs)
+  handleKey()
 end
-
-print(res)
