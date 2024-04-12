@@ -37,8 +37,7 @@ if tArgs[1] == "completion" then
 end
 
 if not tArgs[2] then
-  help()
-  return
+  tArgs[2] = "front"
 end
 
 local node = tArgs[1]
