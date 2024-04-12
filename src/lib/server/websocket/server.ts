@@ -3,10 +3,12 @@ import type { ClientType } from '$lib/types';
 import type { IncomingMessage } from 'http';
 import type { Duplex } from 'stream';
 import { parse } from 'url';
-import { Server, WebSocket as WebSocketBase, WebSocketServer } from 'ws';
+import { type Server, type WebSocket as WebSocketBase, WebSocketServer } from 'ws';
 import type { Admin } from '../client/admin';
 
 export const GlobalThisWSS = Symbol.for('sveltekit.wss');
+export const GlobalThisCreateWss = Symbol.for('sveltekit.createWss');
+export const GlobalThisHandleUpgrade = Symbol.for('sveltekit.handleUpgrade');
 
 export declare class ExtendedWebSocket extends WebSocketBase {
 	socketId: string;
@@ -28,6 +30,8 @@ export interface ExtendedWebSocketServer extends Server<typeof ExtendedWebSocket
 
 export type ExtendedGlobal = typeof globalThis & {
 	[GlobalThisWSS]: ExtendedWebSocketServer;
+	[GlobalThisCreateWss]: () => ExtendedWebSocketServer;
+	[GlobalThisHandleUpgrade]: (req: IncomingMessage, sock: Duplex, head: Buffer) => void;
 };
 
 export const onHttpServerUpgrade = (req: IncomingMessage, sock: Duplex, head: Buffer) => {
@@ -41,6 +45,7 @@ export const onHttpServerUpgrade = (req: IncomingMessage, sock: Duplex, head: Bu
 		wss.emit('connection', ws, req);
 	});
 };
+(globalThis as ExtendedGlobal)[GlobalThisHandleUpgrade] = onHttpServerUpgrade;
 
 export const createWSSGlobalInstance = () => {
 	const wss = new WebSocketServer({ noServer: true }) as ExtendedWebSocketServer;
@@ -85,3 +90,5 @@ export const createWSSGlobalInstance = () => {
 
 	return wss;
 };
+
+(globalThis as ExtendedGlobal)[GlobalThisCreateWss] = createWSSGlobalInstance;

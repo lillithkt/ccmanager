@@ -23,8 +23,10 @@ if lvn.config.get("sorter") then
   --   fs.makeDir('/lvn/sorter')
     lvn.net.downloadFile('/lua/sorter/defaultFilters.lua', '/lvn/sorter/filters.lua')
   -- end
+  lvn.net.downloadFile('/lua/sorter/filters.lua', '/run/sorter/filters.lua')
   lvn.net.downloadFile('/lua/sorter/main.lua', '/run/sorter/main.lua')
 
+  os.loadAPI('/run/sorter/filters.lua')
   os.loadAPI('/lvn/sorter/filters.lua')
 end
 

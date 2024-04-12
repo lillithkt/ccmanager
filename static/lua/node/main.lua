@@ -36,6 +36,7 @@ if lvn.config.get("sorter") then
   print("Item sorter detected")
   local id = multishell.launch({}, "/run/sorter/main.lua")
   multishell.setTitle(id, "Item Sorter")
+  multishell.setFocus(id)
 end
 while true do
   sleep(1)

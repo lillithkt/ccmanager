@@ -1,63 +1,93 @@
-lvn.sorter = {
-  filters = {
-    -- Stone
-    right = function(item)
-      if not item.tags then
-        return false
-      end
-      return item.tags["forge:stone"] ~= nil
-      or item.tags["forge:cobblestone"] ~= nil
-      or item.tags["forge:gravel"] ~= nil
-      or item.tags["minecraft:base_stone_overworld"] ~= nil
-      or item.tags["minecraft:stone_tool_materials"] ~= nil
-      or item.tags["minecraft:stone_crafting_materials"] ~= nil
-      or item.name == "minecraft:flint"
-    end,
-    -- Food
+-- This is setup to my(lily) personal setup
+
+lvn.sorter.cols = {
+  {
+    -- Hoes and shovels (for enchantment) rerolling, dont quesiton me
     left = function(item)
-      if not item.itemGroups then
-        return false
-      end
-      for _, group in ipairs(item.itemGroups) do
-        if group.id == "minecraft:food_and_drinks" then
-          return true
-        end
-      end
-      return false
+      return lvn.sorter.util.names({
+        "minecraft:wooden_hoe",
+        "minecraft:wooden_shovel",
+      }, item)
     end,
-    -- Input
-    top = function(item)
-      return false
-    end,
-    -- Ores
-    bottom = function(item)
-      if not item.tags then
-        return false
-      end
-      return item.tags["forge:raw_materials"] ~= nil
-      or item.tags["forge:gems"] ~= nil
-      or item.tags["forge:ingots"] ~= nil
-      or item.tags["forge:nuggets"] ~= nil
-      or item.tags["minecraft:beacon_payment_items"] ~= nil
-    end,
-    -- Mob Drops
-    front = function(item)
-      return item.name == "minecraft:rotten_flesh"
-      or item.name == "minecraft:bone"
-      or item.name == "minecraft:gunpowder"
-      or item.name == "minecraft:spider_eye"
-      or item.name == "minecraft:ender_pearl"
-      or item.name == "minecraft:blaze_rod"
-      or item.name == "minecraft:ghast_tear"
-      or item.name == "minecraft:slime_ball"
-      or item.name == "minecraft:magma_cream"
-      or item.name == "minecraft:string"
-    end,
-    -- Default
+
+    -- Tools
     back = function(item)
-      return false
+      return lvn.sorter.generic.tools(item) and not lvn.sorter.generic.armour(item)
     end,
+
+    -- Decoration
+    right = function(item)
+      return lvn.sorter.util.nameMatches({
+        ".*diorite.*",
+        "^minecraft:glowstone.*"
+      }, item) 
+        or lvn.sorter.util.tags({
+          "forge:glass",
+          "forge:dyes"
+        }, item)
+    end,
+
+    input = "top",
+    nextRow = "front"
   },
 
-  default = "back"
+  {
+    -- Armour
+    left = lvn.sorter.generic.armour,
+
+    -- Default
+    back = "default",
+
+    -- Wood
+    right = lvn.sorter.generic.wood,
+
+    nextRow = "bottom",
+    input = "top",
+
+    -- Do default last
+    order = {
+      "left",
+      "right",
+      "front",
+      "top",
+      "bottom",
+      "back"
+    }
+  },
+
+  {
+    -- Redstone
+    left = lvn.sorter.generic.redstone,
+
+    -- Ores
+    back = lvn.sorter.generic.ores,
+
+    -- Stone
+    right = lvn.sorter.generic.stone,
+
+    nextRow = "bottom",
+    input = "front"
+  },
+
+  {
+    -- Food
+    left = lvn.sorter.generic.food,
+
+    -- Mob Drops
+    right = lvn.sorter.generic.mobdrops,
+
+    input = "back"
+  }
 }
+
+local pcLabel = os.getComputerLabel()
+
+if pcLabel == "sorter1" then
+  lvn.sorter.curCol = 1
+elseif pcLabel == "sorter2" then
+  lvn.sorter.curCol = 2
+elseif pcLabel == "sorter3" then
+  lvn.sorter.curCol = 3
+elseif pcLabel == "sorter4" then
+  lvn.sorter.curCol = 4
+end
