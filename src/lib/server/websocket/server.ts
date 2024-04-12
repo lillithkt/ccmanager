@@ -53,7 +53,6 @@ export const createWSSGlobalInstance = () => {
 	wss.admins = new Map();
 
 	wss.getNode = (idOrName: number | string) => {
-		console.log('getNode', idOrName);
 		if (idOrName === undefined) {
 			return;
 		}

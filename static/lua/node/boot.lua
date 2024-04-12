@@ -32,4 +32,12 @@ end
 
 os.loadAPI('/run/sharedWs.lua')
 
-shell.run('/run/main.lua')
+local success = pcall(shell.run, '/run/main.lua')
+
+if not success then
+  lvn.chat('Failed to run main.lua')
+
+  sleep(5)
+
+  os.reboot()
+end

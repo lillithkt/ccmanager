@@ -1,5 +1,5 @@
-local function get(key)
-  return settings.get("lvn." .. key)
+local function get(key, default)
+  return settings.get("lvn." .. key, default)
 end
 
 local function set(key, value)

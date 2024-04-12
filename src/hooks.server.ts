@@ -27,7 +27,7 @@ const startupWebsocketServer = () => {
 
 			ws.on('close', (_: unknown, code: number, reason: string) => {
 				console.log(
-					`[wss:kit] client disconnected (${ws.socketId}) with code ${code} and reason ${reason}`
+					`[wss:kit] client ${ws.item?.name} (${ws.item?.id}) disconnected (${ws.socketId}) with code ${code} and reason ${reason}`
 				);
 			});
 

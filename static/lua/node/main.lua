@@ -25,11 +25,10 @@ multishell.setTitle(wsId, "Websocket Runner")
 
 -- Load turtle module
 if turtle then
-  local turtleLoop = require("/run/turtle/main")
-
-  while true do
-    turtleLoop()
-  end
+  print("Running turtle main")
+  local id = multishell.launch(getfenv(), "/run/turtle/main.lua")
+  multishell.setTitle(id, "Turtle")
+  multishell.setFocus(id)
 end
 
 if lvn.config.get("sorter") then
@@ -37,7 +36,4 @@ if lvn.config.get("sorter") then
   local id = multishell.launch({}, "/run/sorter/main.lua")
   multishell.setTitle(id, "Item Sorter")
   multishell.setFocus(id)
-end
-while true do
-  sleep(1)
 end

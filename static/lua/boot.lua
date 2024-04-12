@@ -58,11 +58,11 @@ end
 
 print("Running boot.lua")
 
-shell.run("/run/boot.lua")
+local success = pcall(shell.run, "/run/boot.lua")
+if not success then
+  lvn.chat("Failed to run boot.lua")
 
-if lvn.config.get("boot.type") == "node" then
-  print("Node exited, rebooting...")
-  lvn.chat("Node exited, rebooting...")
   sleep(5)
+
   os.reboot()
 end

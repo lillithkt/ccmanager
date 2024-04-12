@@ -1,13 +1,12 @@
 print("Loading Turtle Library...")
 
-local lastMode = "idle"
-
 -- Add turtle specific ws packets
 local setSetMode = require("/run/turtle/ws")
 -- Load turtle modes
 
-local mode = "idle"
-local modeArgs = {}
+local mode = lvn.config.get("turtle.defaultMode", "idle")
+local lastMode = mode
+local modeArgs = lvn.config.get("turtle.defaultArgs", {})
 
 local modes = {
   spin = require("/run/turtle/modes/spin"),
@@ -27,9 +26,7 @@ end
 
 setSetMode(setMode)
 
-
-
-function turtleLoop()
+while true do
   local modeFunc = modes[mode]
   if lastMode ~= mode then
     print("Switched mode to " .. mode)
@@ -49,5 +46,3 @@ function turtleLoop()
 
   sleep(0.5)
 end
-
-return turtleLoop
