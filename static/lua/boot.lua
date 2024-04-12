@@ -20,7 +20,21 @@ os.loadAPI("/lvn/core/urls.lua")
 os.loadAPI("/lvn/core/utils.lua")
 os.loadAPI("/lvn/core/chat.lua")
 
+lvn.config.define("debug", {
+  description = "Log websocket and http messages",
+  type = boolean,
+  default = false
+})
 
+lvn.config.define("boot.type", {
+  description = "The type of boot to run",
+  type = "string",
+})
+
+lvn.config.define("boot.customBootUrl", {
+  description = "The url to download the boot file from",
+  type = "string",
+})
 
 local tArgs = { ... }
 
@@ -60,7 +74,7 @@ print("Running boot.lua")
 
 local success = pcall(shell.run, "/run/boot.lua")
 if not success then
-  lvn.chat("Failed to run boot.lua")
+  lvn.chat.send("Failed to run boot.lua")
 
   sleep(5)
 

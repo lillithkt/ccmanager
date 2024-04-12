@@ -14,7 +14,8 @@ end
 local function logOre(ore)
   local x, y, z = gps.locate()
   if isOre(ore) then
-    lvn.chat("Found " .. ore.name .. " at " .. x .. ", " .. y + 1 .. ", " .. z)
+    lvn.chat.send("Found " .. ore.name .. " at " .. x .. ", " .. y + 1 .. ", " .. z)
+    lvn.chat.waypoint(os.getComputerLabel() .. " Found " .. ore.name, "O", x, y + 1, z)
     return true
   end
 end

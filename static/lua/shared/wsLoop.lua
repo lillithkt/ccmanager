@@ -2,7 +2,7 @@ sharedWs.connect()
 
 pcall(sharedWs.loop)
 
-lvn.chat("Websocket crashed, rebooting...")
+lvn.chat.send("Websocket crashed, rebooting...")
 
 print("Websocket crashed, rebooting...")
 

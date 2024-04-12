@@ -6,6 +6,18 @@ lvn.net.downloadFile('/lua/shared/ws.lua', '/run/sharedWs.lua')
 lvn.net.downloadFile('/lua/shared/wsLoop.lua', '/run/wsLoop.lua')
 
 if turtle ~= nil then
+
+  lvn.config.define("turtle.defaultMode", {
+    description = "The default mode to run",
+    type = "string",
+    default = "idle"
+  })
+  lvn.config.define("defaultModeArgs", {
+    description = "The default mode arguments",
+    type = "table",
+    default = "{}"
+  })
+
   fs.makeDir("/run/turtle")
   fs.makeDir("/run/turtle/modes")
   lvn.net.downloadFile('/lua/turtle/main.lua', '/run/turtle/main.lua')
@@ -17,6 +29,12 @@ if turtle ~= nil then
   lvn.net.downloadFile('/lua/turtle/modes/mine.lua', '/run/turtle/modes/mine.lua')
 end
 
+
+lvn.config.define("sorter", {
+  description = "Specify this node as a sorter node",
+  type = boolean,
+  default = false
+})
 if lvn.config.get("sorter") then
   fs.makeDir("/run/sorter")
   -- if not fs.exists('/lvn/sorter') then
@@ -32,10 +50,15 @@ end
 
 os.loadAPI('/run/sharedWs.lua')
 
+lvn.config.define("node.password", {
+  description = "The node's password",
+  type = "string",
+})
+
 local success = pcall(shell.run, '/run/main.lua')
 
 if not success then
-  lvn.chat('Failed to run main.lua')
+  lvn.chat.send('Failed to run main.lua')
 
   sleep(5)
 

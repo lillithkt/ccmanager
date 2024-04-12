@@ -37,3 +37,7 @@ if lvn.config.get("sorter") then
   multishell.setTitle(id, "Item Sorter")
   multishell.setFocus(id)
 end
+
+if not turtle and not lvn.config.get("sorter") then
+  multishell.setFocus(wsId)
+end

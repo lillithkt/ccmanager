@@ -30,7 +30,7 @@ local function loop()
     turtle.dig()
     turtle.forward()
   else
-    lvn.chat("Arrived!")
+    lvn.chat.send("Arrived!")
     return "done"
   end
 end

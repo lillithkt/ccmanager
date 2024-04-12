@@ -43,6 +43,11 @@ os.loadAPI('/run/sharedWs.lua')
 local wsId = multishell.launch({}, "/run/wsLoop.lua")
 multishell.setTitle(wsId, "Websocket Runner")
 
+lvn.config.define("admin.password", {
+  description = "The password to access the admin interface",
+  type = "string",
+})
+
 
 if not lvn.config.get("admin.password") then
   print("You do not have a password set.")

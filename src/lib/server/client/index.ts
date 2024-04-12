@@ -26,6 +26,8 @@ export class Client implements SerializableClient {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	listeners: Map<string, Map<number, (...args: any[]) => void>> = new Map();
 
+	packetQueue: ClientPacket[ClientPacketType][] = [];
+
 	heartbeats: number[] = [];
 
 	constructor(
@@ -78,6 +80,17 @@ export class Client implements SerializableClient {
 			if (!commandNode) return;
 			commandNode.runCommand(`tellraw @a {"text":"[${this.name} (${this.id})] ${message}"}`);
 		});
+
+		setInterval(() => {
+			if (this.packetQueue.length > 0) {
+				const packet = this.packetQueue.shift()!;
+				if (this.debug) {
+					console.log(`Node ${this.name} (${this.id}) Sent`, packet);
+				}
+				this.ws.send(JSON.stringify(packet));
+				this.emit('packetOut', packet);
+			}
+		}, 100);
 	}
 
 	send<T extends ClientPacketType>(type: T, data: ClientPacketData[T]) {
@@ -88,11 +101,7 @@ export class Client implements SerializableClient {
 			type,
 			data
 		} as ClientPacket[T];
-		if (this.debug) {
-			console.log(`Node ${this.name} (${this.id}) Sent`, packet);
-		}
-		this.ws.send(JSON.stringify(packet));
-		this.emit('packetOut', packet);
+		this.packetQueue.push(packet);
 	}
 
 	reboot() {

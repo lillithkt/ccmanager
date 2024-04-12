@@ -33,7 +33,7 @@ registerPacketHandler("register", function(data)
     print("Registered successfully")
   else
     printError("Registration failed: ", data.message)
-    lvn.chat("Registration failed: " .. data.message)
+    lvn.chat.send("Registration failed: " .. data.message)
     sleep(5)
     os.reboot()
   end
@@ -122,7 +122,7 @@ function handleClose()
     if speaker then
       speaker.playSound("minecraft:block.bell.use")
     end
-    lvn.chat("Connection closed: " .. code and code or "code unknown" .. " " .. reason)
+    lvn.chat.send("Connection closed: " .. code and code or "code unknown" .. " " .. reason)
     sleep(5)
     os.reboot()
   end
@@ -137,7 +137,7 @@ function handleError()
     if speaker then
       speaker.playSound("minecraft:block.bell.use")
     end
-    lvn.chat("Connection error: " .. code .. " " .. reason)
+    lvn.chat.send("Connection error: " .. code .. " " .. reason)
     sleep(5)
     os.reboot()
   end

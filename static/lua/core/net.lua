@@ -33,7 +33,7 @@ local function get(url, nocreds, nolog)
             print("GET: " .. url)
         end
         printError("GET failed: ", e)
-        lvn.chat("GET failed: " .. e)
+        lvn.chat.send("GET failed: " .. e)
         return false
     end
     local fileContents = file.readAll()
