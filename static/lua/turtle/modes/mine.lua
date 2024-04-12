@@ -20,7 +20,8 @@ local function logOre(ore)
 end
 
 local function isStone(block)
-  return block.tags["forge:cobblestone"] ~= nil 
+  return block.tags["forge:cobblestone"] ~= nil
+  or block.tags["forge:stone"] ~= nil
   or block.tags["forge:gravel"] ~= nil
   or block.tags["minecraft:base_stone_overworld"] ~= nil
   or block.name == "minecraft:flint"
