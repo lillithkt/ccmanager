@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ request }) => {
 			io.write("Is this a node or an admin client? (node/admin): ")
 			local type = io.read("*l")
 
-			if type == "node" or type == "admin" then
+			if type == "node" or type == "admin" or type == "sorter" then
 				setConfig("boot.type", type)
 			else
 				print("Invalid client type")

@@ -17,6 +17,17 @@ if turtle ~= nil then
   lvn.net.downloadFile('/lua/turtle/modes/mine.lua', '/run/turtle/modes/mine.lua')
 end
 
+if lvn.config.get("sorter") then
+  fs.makeDir("/run/sorter")
+  -- if not fs.exists('/lvn/sorter') then
+  --   fs.makeDir('/lvn/sorter')
+    lvn.net.downloadFile('/lua/sorter/defaultFilters.lua', '/lvn/sorter/filters.lua')
+  -- end
+  lvn.net.downloadFile('/lua/sorter/main.lua', '/run/sorter/main.lua')
+
+  os.loadAPI('/lvn/sorter/filters.lua')
+end
+
 os.loadAPI('/run/sharedWs.lua')
 
 shell.run('/run/main.lua')

@@ -32,6 +32,11 @@ if turtle then
   end
 end
 
+if lvn.config.get("sorter") then
+  print("Item sorter detected")
+  local id = multishell.launch({}, "/run/sorter/main.lua")
+  multishell.setTitle(id, "Item Sorter")
+end
 while true do
   sleep(1)
 end
