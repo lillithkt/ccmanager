@@ -124,6 +124,7 @@ lvn.sorter = {
     
     ores = function(item)
       return lvn.sorter.util.tags({
+        "minecraft:coals",
         "forge:raw_materials",
         "forge:gems",
         "forge:ingots",
