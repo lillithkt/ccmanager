@@ -64,10 +64,20 @@ if fs.exists("/run") then
 end
 fs.makeDir("/run")
 
+local success
+
 if lvn.config.get("boot.customBootUrl") then
-  lvn.net.downloadFile(lvn.config.get("boot.customBootUrl"), "/run/boot.lua")
+  success = lvn.net.downloadFile(lvn.config.get("boot.customBootUrl"), "/run/boot.lua")
 else
-  lvn.net.downloadFile("/lua/" .. lvn.config.get("boot.type") .. "/boot.lua", "/run/boot.lua")
+  success = lvn.net.downloadFile("/lua/" .. lvn.config.get("boot.type") .. "/boot.lua", "/run/boot.lua")
+end
+
+if not success then
+  lvn.chat.send("Failed to download boot.lua")
+
+  sleep(5)
+
+  os.reboot()
 end
 
 print("Running boot.lua")

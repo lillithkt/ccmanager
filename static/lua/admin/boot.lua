@@ -33,15 +33,18 @@ shell.setAlias('update', '/run/update.lua')
 
 
 lvn.net.downloadFile('/lua/shared/ws.lua', '/run/sharedWs.lua')
-
-lvn.net.downloadFile('/lua/shared/wsLoop.lua', '/run/wsLoop.lua')
+lvn.net.downloadFile('/lua/shared/rednet.lua', '/run/sharedRednet.lua')
 
 lvn.net.downloadFile('/lua/shared/term.lua', '/run/term.lua')
 
 os.loadAPI('/run/sharedWs.lua')
+os.loadAPI('/run/sharedRednet.lua')
 
-local wsId = multishell.launch({}, "/run/wsLoop.lua")
+local wsId = multishell.launch({}, "/run/sharedWs.lua", "loop")
 multishell.setTitle(wsId, "Websocket Runner")
+
+local rednetId = multishell.launch({}, "/run/sharedRednet.lua", "loop")
+multishell.setTitle(rednetId, "Rednet Runner")
 
 lvn.config.define("admin.password", {
   description = "The password to access the admin interface",

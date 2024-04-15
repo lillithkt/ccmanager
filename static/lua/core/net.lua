@@ -6,6 +6,9 @@ end
 
 local function downloadFile(url, path)
     local fileContents = lvn.net.get(url, true, true)
+    if fileContents == false then
+        return false
+    end
     local file = fs.open(path, "w")
     file.write(fileContents)
     file.close()

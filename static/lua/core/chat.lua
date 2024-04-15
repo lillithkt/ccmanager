@@ -10,11 +10,13 @@ lvn.chat = {
     end
   end,
 
-  waypoint = function(name, initials, x, y, z)
+  waypoint = function(name, initials, x, y, z, dimension)
     if not x or not y or not z then
-      printError("Waypoint requires x, y, and z")
-      return
+      x, y, z = gps.locate()
     end
-    lvn.chat.send("xaero-waypoint:" .. name:gsub(":", "") .. ":" .. initials .. ":" .. x .. ":" .. y .. ":" .. z .. ":0:false:0:Internal-overworld-waypoints")
+    if not dimension then 
+      dimension = sharedRednet.commands.getDimension()
+    end
+    lvn.chat.send("xaero-waypoint:" .. name:gsub(":", "") .. ":" .. initials .. ":" .. x .. ":" .. y .. ":" .. z .. ":0:false:0:Internal-" .. dimension .. "-waypoints")
   end,
 }

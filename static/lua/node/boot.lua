@@ -3,7 +3,8 @@ lvn.net.downloadFile('/lua/node/main.lua', '/run/main.lua')
 lvn.net.downloadFile('/lua/node/ws.lua', '/run/ws.lua')
 
 lvn.net.downloadFile('/lua/shared/ws.lua', '/run/sharedWs.lua')
-lvn.net.downloadFile('/lua/shared/wsLoop.lua', '/run/wsLoop.lua')
+
+lvn.net.downloadFile('/lua/shared/rednet.lua', '/run/sharedRednet.lua')
 
 if turtle ~= nil then
 
@@ -27,6 +28,7 @@ if turtle ~= nil then
   lvn.net.downloadFile('/lua/turtle/modes/spin.lua', '/run/turtle/modes/spin.lua')
   lvn.net.downloadFile('/lua/turtle/modes/goto.lua', '/run/turtle/modes/goto.lua')
   lvn.net.downloadFile('/lua/turtle/modes/mine.lua', '/run/turtle/modes/mine.lua')
+  lvn.net.downloadFile('/lua/turtle/modes/mobgrinder.lua', '/run/turtle/modes/mobgrinder.lua')
 end
 
 
@@ -48,7 +50,38 @@ if lvn.config.get("sorter") then
   os.loadAPI('/lvn/sorter/filters.lua')
 end
 
+lvn.config.define("constellation", {
+  description = "Specify this node as a constellation node",
+  type = boolean,
+  default = false
+})
+lvn.config.define("constellation.x", {
+  description = "The X coordinate of the constellation node",
+  type = "number",
+})
+lvn.config.define("constellation.y", {
+  description = "The Y coordinate of the constellation node",
+  type = "number",
+})
+lvn.config.define("constellation.z", {
+  description = "The Z coordinate of the constellation node",
+  type = "number",
+})
+
+lvn.config.define("constellation.dimension", {
+  description = "The dimension of the constellation node",
+  type = "string",
+})
+
+if lvn.config.get("constellation") then
+  fs.makeDir("/run/constellation")
+  lvn.net.downloadFile('/lua/constellation/main.lua', '/run/constellation/main.lua')
+  lvn.net.downloadFile('/lua/constellation/ws.lua', '/run/constellation/ws.lua')
+  lvn.net.downloadFile('/lua/constellation/rednet.lua', '/run/constellation/rednet.lua')
+end
+
 os.loadAPI('/run/sharedWs.lua')
+os.loadAPI('/run/sharedRednet.lua')
 
 lvn.config.define("node.password", {
   description = "The node's password",

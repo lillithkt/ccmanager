@@ -1,3 +1,20 @@
+local tArgs = { ... }
+
+if tArgs[1] == "loop" then
+  sharedWs.connect()
+
+  pcall(sharedWs.loop)
+
+  lvn.chat.send("Websocket crashed, rebooting...")
+
+  print("Websocket crashed, rebooting...")
+
+  sleep(5)
+
+  os.reboot()
+end
+
+
 if sharedWs then
   sharedWs.disconnect()
   os.unloadAPI("sharedWs")

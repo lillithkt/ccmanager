@@ -15,7 +15,9 @@ local modes = {
 
   goto = require("/run/turtle/modes/goto"),
 
-  mine = require("/run/turtle/modes/mine")
+  mine = require("/run/turtle/modes/mine"),
+
+  mobgrinder = require("/run/turtle/modes/mobgrinder"),
 }
 
 local function setMode(newMode, args)
@@ -26,7 +28,13 @@ end
 
 setSetMode(setMode)
 
+local firstLoop = true
+
 while true do
+  if firstLoop then
+    firstLoop = false
+    modes[mode].setup(modeArgs)
+  end
   local modeFunc = modes[mode]
   if lastMode ~= mode then
     print("Switched mode to " .. mode)
