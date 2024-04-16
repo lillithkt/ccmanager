@@ -1,6 +1,6 @@
 import { ClientPacketType, type ClientPacket } from '$lib/packets/client';
 import { ServerPacketType, type ServerPacket } from '$lib/packets/server';
-import type { Direction, TurtleDirection } from '$lib/types/direction';
+import type { Direction } from '$lib/types/direction';
 import type { ExtendedWebSocket } from '../websocket/server';
 import { Client } from './';
 
@@ -17,18 +17,6 @@ export class Node extends Client {
 		this.send(ClientPacketType.TurnOff, direction);
 	}
 
-	move(direction: TurtleDirection) {
-		this.send(ClientPacketType.Move, direction);
-	}
-
-	dig(direction: TurtleDirection) {
-		this.send(ClientPacketType.Dig, direction);
-	}
-
-	refuel() {
-		this.send(ClientPacketType.Refuel, {});
-	}
-
 	constructor(
 		ws: ExtendedWebSocket,
 		name: string,
@@ -40,7 +28,7 @@ export class Node extends Client {
 		super(ws, name, id, debug, turtle, command);
 
 		const reportToAdmins = (
-			packet: ClientPacket[ClientPacketType] | ServerPacket[ServerPacketType],
+			packet: ClientPacket<ClientPacketType> | ServerPacket<ServerPacketType>,
 			toServer: boolean
 		) => {
 			if (

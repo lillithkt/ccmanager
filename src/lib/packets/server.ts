@@ -1,5 +1,6 @@
 import type { ClientType } from '$lib/types';
 import type { TurtleDirection } from '$lib/types/direction';
+import type { ClientPacket, ClientPacketType } from './client';
 
 export enum ServerPacketType {
 	Register = 'register',
@@ -12,7 +13,8 @@ export enum ServerPacketType {
 	Dig = 'dig',
 	Refuel = 'refuel',
 	Command = 'command',
-	Chat = 'chat'
+	Chat = 'chat',
+	Packet = 'packet'
 }
 
 export type ServerPacketData = {
@@ -52,11 +54,13 @@ export type ServerPacketData = {
 		logs: string[];
 	};
 	[ServerPacketType.Chat]: string;
+	[ServerPacketType.Packet]: {
+		node: number | string;
+		packet: ClientPacket<ClientPacketType>;
+	};
 };
 
-export type ServerPacket = {
-	[key in ServerPacketType]: {
-		type: key;
-		data: ServerPacketData[key];
-	};
+export type ServerPacket<T extends ServerPacketType> = {
+	type: T;
+	data: ServerPacketData[T];
 };

@@ -1,50 +1,33 @@
-lvn.net.downloadFile('/lua/admin/toggle.lua', '/run/toggle.lua')
-shell.setAlias('toggle', '/run/toggle.lua')
-shell.run('/run/toggle.lua completion')
+local program = require('/lvn/core/program')
 
+program.download('/lua/admin/toggle.lua', '/run/toggle.lua', 'toggle', true)
 
-lvn.net.downloadFile('/lua/admin/eval.lua', '/run/eval.lua')
-shell.setAlias('eval', '/run/eval.lua')
-shell.run('/run/eval.lua completion')
+program.download('/lua/admin/eval.lua', '/run/eval.lua', 'eval', true)
 
-lvn.net.downloadFile('/lua/admin/turtle.lua', '/run/turtle.lua')
-shell.setAlias('turtle', '/run/turtle.lua')
-shell.run('/run/turtle.lua completion')
+program.download('/lua/admin/turtle.lua', '/run/turtle.lua', 'turtle', true)
 
-lvn.net.downloadFile('/lua/admin/debug.lua', '/run/debug.lua')
-shell.setAlias('debug', '/run/debug.lua')
-shell.run('/run/debug.lua completion')
+program.download('/lua/admin/debug.lua', '/run/debug.lua', 'debug', true)
 
-lvn.net.downloadFile('/lua/admin/packet.lua', '/run/packet.lua')
-shell.setAlias('packet', '/run/packet.lua')
-shell.run('/run/packet.lua completion')
+program.download('/lua/admin/packet.lua', '/run/packet.lua', 'packet', true)
 
-lvn.net.downloadFile('/lua/admin/reboot.lua', '/run/reboot.lua')
-shell.setAlias('reboot', '/run/reboot.lua')
-shell.run('/run/reboot.lua completion')
+program.download('/lua/admin/reboot.lua', '/run/reboot.lua', 'reboot', true)
 
 fs.makeDir("/run/win")
-lvn.net.downloadFile('/lua/admin/win/main.lua', '/run/win/main.lua')
-shell.setAlias('win', '/run/win/main.lua')
+program.download('/lua/admin/win/main.lua', '/run/win/main.lua', 'win', false)
 
+program.download('/lua/admin/update.lua', '/run/update.lua', 'update', false)
 
-lvn.net.downloadFile('/lua/admin/update.lua', '/run/update.lua')
-shell.setAlias('update', '/run/update.lua')
+program.download('/lua/shared/ws.lua', '/run/sharedWs.lua', false, false)
 
+program.download('/lua/shared/rednet.lua', '/run/sharedRednet.lua', false, false)
 
-lvn.net.downloadFile('/lua/shared/ws.lua', '/run/sharedWs.lua')
-lvn.net.downloadFile('/lua/shared/rednet.lua', '/run/sharedRednet.lua')
-
-lvn.net.downloadFile('/lua/shared/term.lua', '/run/term.lua')
+program.download('/lua/shared/term.lua', '/run/term.lua', false, false)
 
 os.loadAPI('/run/sharedWs.lua')
 os.loadAPI('/run/sharedRednet.lua')
 
-local wsId = multishell.launch({}, "/run/sharedWs.lua", "loop")
-multishell.setTitle(wsId, "Websocket Runner")
-
-local rednetId = multishell.launch({}, "/run/sharedRednet.lua", "loop")
-multishell.setTitle(rednetId, "Rednet Runner")
+program.run('/run/sharedWs.lua', 'Websocket Runner', false, "loop")
+program.run('/run/sharedRednet.lua', 'Rednet Runner', false, "loop")
 
 lvn.config.define("admin.password", {
   description = "The password to access the admin interface",

@@ -13,16 +13,8 @@ export class Admin extends Client {
 	) {
 		super(ws, name, id, debug, turtle, command);
 
-		this.on(ServerPacketType.Move, (data) => {
-			this.ws.wss.getNode(data.id)?.move(data.direction);
-		});
-
-		this.on(ServerPacketType.Dig, (data) => {
-			this.ws.wss.getNode(data.id)?.dig(data.direction);
-		});
-
-		this.on(ServerPacketType.Refuel, (id) => {
-			this.ws.wss.getNode(id)?.refuel();
+		this.on(ServerPacketType.Packet, (data) => {
+			this.ws.wss.getNode(data.node)?.send(data.packet.type, data.packet.data);
 		});
 	}
 }

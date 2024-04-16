@@ -1,21 +1,15 @@
+local completion = require('/lvn/core/completion')
+
+completion.setCompletionFunction(function()
+  local ccCompletion = require("cc.shell.completion")
+
+  return ccCompletion.build({ ccCompletion.choice, { "abc" }})
+end)
+
+completion.setHelpText("Usage: ")
+
 local tArgs = { ... }
 
-local function help()
-  print("Usage: a <node> <direction>")
-  print("Toggles the state of a node")
-end
-
-if not tArgs[1] then
-  help()
-  return
-end
-
-if tArgs[1] == "completion" then
-  local completion = require("cc.shell.completion")
-
-  local complete = completion.build({ completion.choice, possibleNodes}, { completion.choice, possibleDirections })
-
-  shell.setCompletionFunction(shell.getRunningProgram(), complete)
-
+if not completion.check(tArgs) then
   return
 end

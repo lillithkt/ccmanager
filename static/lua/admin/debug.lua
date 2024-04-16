@@ -1,23 +1,12 @@
-local tArgs = { ... }
+local completion = require('/lvn/core/completion')
 
-local function help()
-  print("Usage: debug <node>")
-  print("Log a node's packets")
-end
+completion.setCompletionFunction(function()
+  local ccCompletion = require("cc.shell.completion")
 
-if not tArgs[1] then
-  help()
-  return
-end
-
-if tArgs[1] == "completion" then
   local nodes = textutils.unserializeJSON(lvn.net.get("/api/admin/nodes"))
   
   -- nodes: array of {name: string, id: string}
   -- allow param 1 to be a node name or id
-  
-  local completion = require("cc.shell.completion")
-
   -- add the node name and id to the possibleNodes list
   local possibleNodes = {}
   
@@ -26,10 +15,17 @@ if tArgs[1] == "completion" then
     table.insert(possibleNodes, tostring(node.id))
   end
 
-  local complete = completion.build({ completion.choice, possibleNodes})
+  return ccCompletion.build({ ccCompletion.choice, possibleNodes})
+end)
 
-  shell.setCompletionFunction(shell.getRunningProgram(), complete)
+completion.setHelpText("Usage: debug <node>")
+completion.setHelpText("Log a node's packets")
 
+completion.setRequiredArgs(1)
+
+local tArgs = { ... }
+
+if not completion.check(tArgs) then
   return
 end
 

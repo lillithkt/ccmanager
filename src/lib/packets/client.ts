@@ -40,7 +40,7 @@ export type ClientPacketData = {
 	[ClientPacketType.AdminNodePacket]: {
 		node: SerializableClient;
 		toServer: boolean;
-		packet: ServerPacket[ServerPacketType] | ClientPacket[ClientPacketType];
+		packet: ServerPacket<ServerPacketType> | ClientPacket<ClientPacketType>;
 	};
 	[ClientPacketType.Command]: {
 		nonce: number;
@@ -58,9 +58,7 @@ export type ClientPacketData = {
 	};
 };
 
-export type ClientPacket = {
-	[key in ClientPacketType]: {
-		type: key;
-		data: ClientPacketData[key];
-	};
+export type ClientPacket<T extends ClientPacketType> = {
+	type: T;
+	data: ClientPacketData[T];
 };
