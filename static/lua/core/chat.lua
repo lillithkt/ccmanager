@@ -25,7 +25,7 @@ lvn.chat = {
     elseif config.waypointMode == "journey" then
       lvn.chat.send("[name:" .. name .. ",x:" .. x .. ",y:" .. y .. ",z:" .. z .. ",dim:" .. dimension .. "]")
     else
-      lvn.chat.send("waypoint:" .. name .. ":" .. x .. ":" .. y .. ":" .. z .. ":" .. dimension)
+      lvn.chat.send("waypoint:\"" .. name .. "\":" .. x .. ":" .. y .. ":" .. z .. ":" .. dimension)
     end
   end,
 }
