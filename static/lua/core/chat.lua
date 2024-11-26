@@ -17,6 +17,15 @@ lvn.chat = {
     if not dimension then 
       dimension = sharedRednet.commands.getDimension()
     end
-    lvn.chat.send("xaero-waypoint:" .. name:gsub(":", "") .. ":" .. initials .. ":" .. x .. ":" .. y .. ":" .. z .. ":0:false:0:Internal-" .. dimension .. "-waypoints")
+    local configStr = lvn.net.get("/api/config")
+    local config = textutils.unserializeJSON(configStr)
+    -- Get config.waypointMode
+    if config.waypointMode == "xaero" then
+      lvn.chat.send("xaero-waypoint:" .. name:gsub(":", "") .. ":" .. initials .. ":" .. x .. ":" .. y .. ":" .. z .. ":0:false:0:Internal-" .. dimension .. "-waypoints")
+    else if config.waypointMode == "journey" then
+      lvn.chat.send("[name:" .. name .. ",x:" .. x .. ",y:" .. y .. ",z:" .. z .. ",dim:" .. dimension .. "]")
+    else
+      lvn.chat.send("waypoint:" .. name .. ":" .. x .. ":" .. y .. ":" .. z .. ":" .. dimension)
+    end
   end,
 }

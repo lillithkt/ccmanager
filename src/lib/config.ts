@@ -10,6 +10,7 @@ export interface ServerConfig {
 		admin: string;
 		node: string;
 	};
+	waypointMode: 'xaero' | 'journey'
 }
 
 export interface ClientBootConfig {
@@ -39,7 +40,8 @@ const defaultConfig: ServerConfig = {
 	passwords: {
 		admin: 'admin',
 		node: 'node'
-	}
+	},
+	waypointMode: 'journey'
 };
 
 const serverConfig: ServerConfig = existsSync('config.json')
