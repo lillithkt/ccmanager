@@ -17,7 +17,7 @@ lvn.chat = {
     if not dimension then 
       dimension = sharedRednet.commands.getDimension()
     end
-    local configStr = lvn.net.get("/api/public/config")
+    local configStr = lvn.net.get("/api/config")
     local config = textutils.unserializeJSON(configStr)
     -- Get config.waypointMode
     if config.waypointMode == "xaero" then

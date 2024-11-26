@@ -173,7 +173,7 @@ export const handle = (async ({ event, resolve }) => {
 			event.locals.node = node;
 		}
 	} else if (
-		!['/websocket', '/login', '/setup', '/api/render', '/api/public'].includes(event.url.pathname) &&
+		!['/websocket', '/login', '/setup', '/api/render', '/api/config'].includes(event.url.pathname) &&
 		!event.url.pathname.includes('/lua')
 	) {
 		if (
