@@ -22,9 +22,9 @@ lvn.chat = {
     -- Get config.waypointMode
     if config.waypointMode == "xaero" then
       lvn.chat.send("xaero-waypoint:" .. name:gsub(":", "") .. ":" .. initials .. ":" .. x .. ":" .. y .. ":" .. z .. ":0:false:0:Internal-" .. dimension .. "-waypoints")
-    else if config.waypointMode == "journey" then
+    elseif config.waypointMode == "journey" then
       lvn.chat.send("[name:" .. name .. ",x:" .. x .. ",y:" .. y .. ",z:" .. z .. ",dim:" .. dimension .. "]")
-    else then
+    else
       lvn.chat.send("waypoint:" .. name .. ":" .. x .. ":" .. y .. ":" .. z .. ":" .. dimension)
     end
   end,
