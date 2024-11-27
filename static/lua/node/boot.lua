@@ -22,7 +22,7 @@ if turtle ~= nil then
   })
   lvn.config.define("turtle.sendChat", {
     description = "Wether to send chat messages when ores are found",
-    type = "bool",
+    type = "boolean",
     default = true
   })
   fs.makeDir("/lvn/config/turtle")
