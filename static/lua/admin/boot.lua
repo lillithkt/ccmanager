@@ -1,3 +1,6 @@
+print("Waiting for all nodes to boot")
+os.sleep(2)
+
 local program = require('/lvn/core/program')
 
 program.download('/lua/admin/toggle.lua', '/run/toggle.lua', 'toggle', true)

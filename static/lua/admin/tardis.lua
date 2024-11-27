@@ -14,11 +14,12 @@ end
 
 
 local methods = {}
-local res = lvn.net.get("/api/admin/nodes/" .. possibleNodes[1] .. "/tardis/methods")
-if res then
-  methods = textutils.unserializeJSON(res)
+if #possibleNodes > 0 then
+  local res = lvn.net.get("/api/admin/nodes/" .. possibleNodes[1] .. "/tardis/methods")
+  if res then
+    methods = textutils.unserializeJSON(res)
+  end
 end
-
 
 completion.setCompletionFunction(function()
   local ccCompletion = require("cc.shell.completion")
