@@ -33,7 +33,7 @@ completion.check = function(args)
 
   if isHelp or #args < completion.requiredArgs then
     -- Split by \n
-    for line in completion.helpText do
+    for i, line in pairs(completion.helpText) do
       print(line)
     end
     return false
