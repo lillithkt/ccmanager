@@ -53,7 +53,13 @@ end
 
 local args = {}
 for i = 3, #tArgs do
-  table.insert(args, textutils.unserializeJSON(tArgs[i]))
+  local success, value = pcall(textutils.unserializeJSON, tArgs[i])
+  if success then
+    table.insert(args, value)
+  else
+    -- if it's not a json object, just add it as a string
+    table.insert(args, tArgs[i])
+  end
 end
 
 local res = lvn.net.post("/api/admin/nodes/" .. tArgs[1] .. "/tardis/method", textutils.serializeJSON(
