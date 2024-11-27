@@ -35,7 +35,7 @@ end
 
 local topPeripheralMethods = peripheral.getMethods("top")
 if topPeripheralMethods then
-  if utils.list.contains(topPeripheralMethods, "getDestinationDimension") then
+  if lvn.utils.list.contains(topPeripheralMethods, "getDestinationDimension") then
     print("Handles Tardis Interface Detected")
     program.run('/run/tardis/main.lua', 'Tardis', true)
   end

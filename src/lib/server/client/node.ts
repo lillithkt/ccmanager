@@ -23,9 +23,10 @@ export class Node extends Client {
 		id: number,
 		debug = false,
 		turtle: boolean = false,
-		command: boolean = false
+		command: boolean = false,
+		tardis: boolean = false
 	) {
-		super(ws, name, id, debug, turtle, command);
+		super(ws, name, id, debug, turtle, command, tardis);
 
 		const reportToAdmins = (
 			packet: ClientPacket<ClientPacketType> | ServerPacket<ServerPacketType>,

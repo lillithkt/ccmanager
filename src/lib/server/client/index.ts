@@ -27,7 +27,7 @@ export class Client implements SerializableClient {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	listeners: Map<string, Map<number, (...args: any[]) => void>> = new Map();
 
-	packetQueue: ClientPacket[ClientPacketType][] = [];
+	packetQueue: ClientPacket<ClientPacketType>[] = [];
 
 	heartbeats: number[] = [];
 
@@ -53,7 +53,7 @@ export class Client implements SerializableClient {
 		});
 
 		this.ws.on('message', (message) => {
-			const packet = JSON.parse(message.toString()) as ServerPacket[ServerPacketType];
+			const packet = JSON.parse(message.toString()) as ServerPacket<ServerPacketType>;
 			if (this.debug) {
 				console.log(`Node ${this.name} (${this.id}) Received`, packet);
 			}
@@ -103,7 +103,7 @@ export class Client implements SerializableClient {
 		const packet = {
 			type,
 			data
-		} as ClientPacket[T];
+		} as ClientPacket<T>;
 		this.packetQueue.push(packet);
 	}
 
@@ -144,8 +144,8 @@ export class Client implements SerializableClient {
 	}
 
 	emit(event: 'close', code: number, reason: string): void;
-	emit(event: 'packet', packet: ServerPacket[ServerPacketType]): void;
-	emit(event: 'packetOut', packet: ClientPacket[ClientPacketType]): void;
+	emit(event: 'packet', packet: ServerPacket<ServerPacketType>): void;
+	emit(event: 'packetOut', packet: ClientPacket<ClientPacketType>): void;
 	emit<T extends ServerPacketType>(type: T, data: ServerPacketData[T]): void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	emit(event: string, ...args: any[]) {
@@ -153,8 +153,8 @@ export class Client implements SerializableClient {
 	}
 
 	on(event: 'close', callback: (code: number, reason: string) => void): number;
-	on(event: 'packet', callback: (packet: ServerPacket[ServerPacketType]) => void): number;
-	on(event: 'packetOut', callback: (packet: ClientPacket[ClientPacketType]) => void): number;
+	on(event: 'packet', callback: (packet: ServerPacket<ServerPacketType>) => void): number;
+	on(event: 'packetOut', callback: (packet: ClientPacket<ClientPacketType>) => void): number;
 	on<T extends ServerPacketType>(type: T, callback: (data: ServerPacketData[T]) => void): number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	on(event: string, callback: (...args: any[]) => void): number {
@@ -166,8 +166,8 @@ export class Client implements SerializableClient {
 	}
 
 	once(event: 'close', callback: (code: number, reason: string) => void): number;
-	once(event: 'packet', callback: (packet: ServerPacket[ServerPacketType]) => void): number;
-	once(event: 'packetOut', callback: (packet: ClientPacket[ClientPacketType]) => void): number;
+	once(event: 'packet', callback: (packet: ServerPacket<ServerPacketType>) => void): number;
+	once(event: 'packetOut', callback: (packet: ClientPacket<ClientPacketType>) => void): number;
 	once<T extends ServerPacketType>(type: T, callback: (data: ServerPacketData[T]) => void): number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	once(event: string, callback: (...args: any[]) => void): number {

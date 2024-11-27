@@ -3,7 +3,7 @@ import type { ClientType } from '$lib/types';
 import type { IncomingMessage } from 'http';
 import type { Duplex } from 'stream';
 import { parse } from 'url';
-import { type Server, type WebSocket as WebSocketBase, WebSocketServer } from 'ws';
+import WebsocketNS, { type WebSocket as WebSocketBase, WebSocketServer } from 'ws';
 import type { Admin } from '../client/admin';
 
 export const GlobalThisWSS = Symbol.for('sveltekit.wss');
@@ -20,12 +20,13 @@ export declare class ExtendedWebSocket extends WebSocketBase {
 // You can define server-wide functions or class instances here
 // export interface ExtendedServer extends Server<ExtendedWebSocket> {};
 
-export interface ExtendedWebSocketServer extends Server<typeof ExtendedWebSocket> {
+export interface ExtendedWebSocketServer extends WebsocketNS.Server<typeof ExtendedWebSocket> {
 	nodes: Map<number, Node>;
 	admins: Map<number, Admin>;
 
 	getNode(id: number): Node | undefined;
 	getNode(name: string): Node | undefined;
+	getNode(idOrName: number | string): Node | undefined;
 }
 
 export type ExtendedGlobal = typeof globalThis & {

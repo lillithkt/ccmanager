@@ -32,7 +32,7 @@ const startupWebsocketServer = () => {
 			});
 
 			ws.once('message', (message) => {
-				const packet = JSON.parse(message.toString()) as ServerPacket[ServerPacketType];
+				const packet = JSON.parse(message.toString()) as ServerPacket<ServerPacketType>;
 
 				if (packet.type !== ServerPacketType.Register) {
 					ws.send(

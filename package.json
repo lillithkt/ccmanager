@@ -19,7 +19,6 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "^8.56.0",
 		"@types/node": "^20.12.5",
-		"@types/ws": "^8.5.10",
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
 		"autoprefixer": "^10.4.19",
@@ -38,8 +37,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/ws": "^8.5.13",
 		"monaco-editor": "^0.47.0",
 		"tsm": "^2.3.0",
-		"ws": "^8.16.0"
+		"ws": "^8.18.0"
 	}
 }

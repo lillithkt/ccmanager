@@ -180,7 +180,7 @@ function connect()
     local topPeripheralMethods = peripheral.getMethods("top")
     local tardis = false
     if topPeripheralMethods then
-      if utils.list.contains(topPeripheralMethods, "getDestinationDimension") then
+      if lvn.utils.list.contains(topPeripheralMethods, "getDestinationDimension") then
         tardis = true
       end
     end

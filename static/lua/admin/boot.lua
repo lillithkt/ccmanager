@@ -6,6 +6,8 @@ program.download('/lua/admin/eval.lua', '/run/eval.lua', 'eval', true)
 
 program.download('/lua/admin/turtle.lua', '/run/turtle.lua', 'turtle', true)
 
+program.download('/lua/admin/tardis.lua', '/run/tardis.lua', 'tardis', true)
+
 program.download('/lua/admin/debug.lua', '/run/debug.lua', 'debug', true)
 
 program.download('/lua/admin/packet.lua', '/run/packet.lua', 'packet', true)

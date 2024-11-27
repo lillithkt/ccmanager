@@ -15,7 +15,7 @@ function listContains(self, match)
 end
 
 
-utils = {
+lvn.utils = {
   string = {
     split = string.split
   },
