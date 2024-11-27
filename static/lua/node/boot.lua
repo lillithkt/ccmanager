@@ -15,10 +15,15 @@ if turtle ~= nil then
     type = "string",
     default = "idle"
   })
-  lvn.config.define("defaultModeArgs", {
+  lvn.config.define("turtle.defaultModeArgs", {
     description = "The default mode arguments",
     type = "table",
     default = "{}"
+  })
+  lvn.config.define("turtle.sendChat", {
+    description = "Wether to send chat messages when ores are found",
+    type = "bool",
+    default = true
   })
   fs.makeDir("/lvn/config/turtle")
   fs.makeDir("/run/turtle")

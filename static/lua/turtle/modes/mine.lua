@@ -13,7 +13,7 @@ end
 
 local function logOre(ore)
   local x, y, z = gps.locate()
-  if isOre(ore) then
+  if isOre(ore) and lvn.config.get("turtle.sendChat", true) then
     lvn.chat.send("Found " .. ore.name .. " at " .. x .. ", " .. y + 1 .. ", " .. z)
     lvn.chat.waypoint(os.getComputerLabel() .. " Found " .. ore.name, "O")
     return true
