@@ -4,3 +4,22 @@ function string.split(self, sep)
   self:gsub(pattern, function(c) fields[#fields+1] = c end)
   return fields
 end
+
+function listContains(self, match)
+  for i, value in ipairs(self) do
+    if value == match then
+      return true
+    end
+  end
+  return false
+end
+
+
+utils = {
+  string = {
+    split = string.split
+  },
+  list = {
+    contains = listContains
+  }
+}

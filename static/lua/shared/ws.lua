@@ -177,6 +177,13 @@ function connect()
   else
     socket = newSocket
     print('Connection established')
+    local topPeripheralMethods = peripheral.getMethods("top")
+    local tardis = false
+    if topPeripheralMethods then
+      if utils.list.contains(topPeripheralMethods, "getDestinationDimension") then
+        tardis = true
+      end
+    end
     send("register", {
       type = lvn.config.get("boot.type"),
       id = os.getComputerID(),
@@ -184,7 +191,8 @@ function connect()
       password = lvn.config.get(lvn.config.get("boot.type") .. ".password"),
       debug = lvn.config.get("debug"),
       turtle = turtle ~= nil,
-      command = commands ~= nil
+      command = commands ~= nil,
+      tardis = tardis
     })
     return true
   end

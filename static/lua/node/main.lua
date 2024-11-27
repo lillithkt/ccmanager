@@ -32,3 +32,11 @@ if lvn.config.get("constellation") then
   print("Constellation node detected")
   program.run('/run/constellation/main.lua', 'Constellation', true)
 end
+
+local topPeripheralMethods = peripheral.getMethods("top")
+if topPeripheralMethods then
+  if utils.list.contains(topPeripheralMethods, "getDestinationDimension") then
+    print("Handles Tardis Interface Detected")
+    program.run('/run/tardis/main.lua', 'Tardis', true)
+  end
+end
